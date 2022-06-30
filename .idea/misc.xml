@@ -4,7 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/ic_gazprom.xml" value="0.242" />
-        <entry key="..\:/Programmist/messanger/app/src/main/res/layout/activity_main.xml" value="0.8" />
+        <entry key="..\:/Programmist/messanger/app/src/main/res/layout/activity_main.xml" value="0.22644927536231885" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/drawble_login_bg_circle.xml" value="0.1625" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/layout/fragment_login.xml" value="0.176" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/layout/fragment_registration.xml" value="0.264" />
       </map>
     </option>
   </component>

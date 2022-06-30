@@ -1,27 +1,29 @@
-package com.example.messanger.presentation.fragment.authenctication
+package com.example.messanger.presentation.fragment.authentication
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.messanger.R
-import com.example.messanger.databinding.FragmentLoginBinding
+import com.example.messanger.databinding.FragmentRegistrationBinding
 
-class LoginFragment : Fragment() {
+class RegistrationFragment : Fragment() {
 
-    private lateinit var binding: FragmentLoginBinding
+    private lateinit var binding: FragmentRegistrationBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.button.setOnClickListener { findNavController().popBackStack(R.id.registrationFragment,true) }
     }
+
 }
