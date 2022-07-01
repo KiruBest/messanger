@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#33BEE7"
-    tools:context=".presentation.fragment.authentication.LoginFragment">
+    tools:context=".presentation.fragment.authentication.OtpFragment">
 
     <View
-        android:id="@+id/viewLogIn"
+        android:id="@+id/viewOTP"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/ic_login_background_circle"
@@ -19,50 +19,50 @@
         app:layout_constraintWidth_percent="1" />
 
     <ImageView
-        android:id="@+id/imageViewLogIn"
+        android:id="@+id/imageOTP"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="80dp"
         android:src="@drawable/ic_gazprom"
-        app:layout_constraintBottom_toBottomOf="@id/viewLogIn"
-        app:layout_constraintEnd_toEndOf="@id/viewLogIn"
-        app:layout_constraintStart_toStartOf="@id/viewLogIn" />
+        app:layout_constraintBottom_toBottomOf="@id/viewOTP"
+        app:layout_constraintEnd_toEndOf="@id/viewOTP"
+        app:layout_constraintStart_toStartOf="@id/viewOTP" />
 
     <TextView
-        android:id="@+id/textViewLogInHeading"
+        android:id="@+id/textViewOTPHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/welcome_fragment_login"
+        android:text="@string/otp_fragment_otp"
         android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationHeadingTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/viewOTP" />
 
     <TextView
-        android:id="@+id/textViewLogIn"
+        android:id="@+id/textViewOTP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationTextView"
         android:gravity="center_horizontal"
-        android:text="@string/number_fragment_login"
+        android:text="@string/auth_fragment_otp"
+        android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLogInHeading" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewOTPHeading" />
 
     <EditText
-        android:id="@+id/editTextLogIn"
+        android:id="@+id/editTextOTP"
         style="@style/ThemeOverlay.Material3.TextInputEditText.AuthenticationEditText"
         android:layout_marginTop="16dp"
         android:hint="@string/login_fragment_login"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewOTP" />
 
     <ProgressBar
-        android:id="@+id/progressBarLogIn"
+        android:id="@+id/progressBarOTP"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,10 +70,10 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextOTP" />
 
     <TextView
-        android:id="@+id/textViewErrorLogIn"
+        android:id="@+id/textViewErrorOTP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -83,10 +83,10 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBarLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/progressBarOTP" />
 
     <Button
-        android:id="@+id/buttonLogIn"
+        android:id="@+id/buttonLogOTP"
         style="@style/ShapeAppearanceOverlay.Material3.Button.BlackButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -94,9 +94,35 @@
         android:text="@string/continue_fragment_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewErrorLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewErrorOTP" />
 
+    <TextView
+        android:id="@+id/textViewOTPResend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_condensed_italic"
+        android:letterSpacing="0.05"
+        android:text="@string/resend_fragment_otp"
+        android:textColor="@color/white"
+        android:textSize="17dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogOTP" />
 
-
+    <Button
+        android:id="@+id/buttonOTPResend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:backgroundTint="#33BEE7"
+        android:fontFamily="@font/roboto_condensed_regular"
+        android:text="@string/resend_bt_fragment_otp"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:shadowColor="@color/black"
+        android:textFontWeight="500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogOTP" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
