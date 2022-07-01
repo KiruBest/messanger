@@ -36,12 +36,21 @@
         <item name="android:textColor">#F2F5F5F5</item>
     </style>
 
-    <style name="ThemeOverlay.Material3.TextInputEditText.AuthenticationEditText">
-        <item name="android:layout_marginHorizontal">40dp</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.ButtonText</item>
-        <item name="android:textColor">#F2F5F5F5</item>
+    <style name="TextAppearance.AppCompat.AuthenticationEditText">
+        <item name="android:fontFamily">@font/roboto_condensed_regular</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textFontWeight">800</item>
+        <item name="android:letterSpacing">0.05</item>
     </style>
 
+    <style name="ThemeOverlay.Material3.TextInputEditText.AuthenticationEditText">
+        <item name="android:background">@drawable/ic_auth_background_edit_text</item>
+        <item name="android:layout_marginHorizontal">40dp</item>
+        <item name="android:layout_width">311dp</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.AuthenticationEditText</item>
+    </style>
 
 
 </resources>

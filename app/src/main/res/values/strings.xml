@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">GazpromMessenger</string>
+    <string name="login_fragment_login">Логин</string>
+    <string name="password_fragment_login">Пароль</string>
+    <string name="error_fragment_login">Неверный логин или пароль</string>
     <string name="log_in_fragment_login">Войти</string>
+    <string name="registration_fragment_login">Регистрация</string>
 </resources>
