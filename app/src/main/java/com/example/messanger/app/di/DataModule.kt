@@ -5,5 +5,5 @@ import com.example.messanger.data.repository.IAccountSource
 import org.koin.dsl.module
 
 val dataModule = module {
-    single<IAccountSource> { AccountSource() }
+    single<IAccountSource> { AccountSource(get()) }
 }
