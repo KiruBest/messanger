@@ -100,7 +100,7 @@
         android:id="@+id/textViewOTPResend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
+        android:layout_marginStart="55dp"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/roboto_condensed_italic"
         android:letterSpacing="0.05"
@@ -112,16 +112,11 @@
 
     <Button
         android:id="@+id/buttonOTPResend"
+        style="@style/Widget.Material3.Button.OutlinedButton.ResendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="48dp"
-        android:backgroundTint="#33BEE7"
-        android:fontFamily="@font/roboto_condensed_regular"
+        android:layout_marginEnd="55dp"
         android:text="@string/resend_bt_fragment_otp"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:shadowColor="@color/black"
-        android:textFontWeight="500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogOTP" />
 
