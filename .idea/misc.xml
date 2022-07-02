@@ -4,25 +4,20 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/ic_gazprom.xml" value="0.242" />
-        <entry key="..\:/Programmist/messanger/app/src/main/res/layout/activity_main.xml" value="0.22644927536231885" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1625" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/authentification_background_edit_text.xml" value="0.1625" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/drawble_login_bg_circle.xml" value="0.1625" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/ic_auth_background_edit_text.xml" value="0.1625" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1625" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/ic_login_background_circle.xml" value="0.236" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/ic_otp_background_resend_button.xml" value="0.1625" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/layout/fragment_login.xml" value="0.264" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/layout/fragment_otp.xml" value="0.2" />
-        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/layout/fragment_registration.xml" value="0.264" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/ic_login_background_circle.xml" value="0.2555" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/ic_temp.xml" value="0.2555" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/login_background_circle.xml" value="0.2555" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/temp.xml" value="0.2555" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/activity_main.xml" value="0.152" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_login.xml" value="0.128" />
+        <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_otp.xml" value="0.22644927536231885" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_registration.xml" value="0.10989583333333333" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/authentification_background_edit_text.xml" value="0.1625" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/drawble_login_bg_circle.xml" value="0.1625" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/ic_login_background_circle.xml" value="0.236" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/layout/fragment_login.xml" value="0.264" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/layout/fragment_registration.xml" value="0.264" />
       </map>
     </option>
   </component>
