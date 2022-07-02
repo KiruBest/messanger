@@ -27,17 +27,6 @@ class AccountService(
             val callback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
                     Log.d("onVerificationCompleted", "onVerificationCompleted:$phoneAuthCredential")
-
-                    firebaseAuth.signInWithCredential(phoneAuthCredential)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Log.i("onVerificationCompletedWithoutCode", task.result.user?.uid.toString())
-                                continuation.resume(AsyncOperationResult.Success(task.result.user != null))
-                            } else {
-                                Log.i("onVerificationFailedWithoutCode", task.exception.toString())
-                                continuation.resume(AsyncOperationResult.Failure(task.exception!!))
-                            }
-                        }
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {

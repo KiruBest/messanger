@@ -1,15 +1,13 @@
 package com.example.messanger.presentation.fragment.authentication
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.messanger.R
-import com.example.messanger.databinding.FragmentLoginBinding
 import com.example.messanger.databinding.FragmentOtpBinding
 import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.presentation.core.validateCode
@@ -33,11 +31,10 @@ class OtpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val progressBar = binding.progressBarOTP
-        val editTextOTP = binding.editTextOTP
         val textViewError = binding.textViewErrorOTP
 
         binding.buttonLogOTP.setOnClickListener {
-            val code = binding.editTextOTP.text.toString()
+            val code = binding.pinViewOTP.text.toString()
             val error = code.validateCode()
 
             if (error != "") {
@@ -51,25 +48,27 @@ class OtpFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.codeSentFlow.collect { result ->
-                when(result) {
+                when (result) {
                     is AsyncOperationResult.Success -> {
                         findNavController().navigate(R.id.action_otpFragment_to_homeFragment)
 
-                        progressBar.visibility = View.INVISIBLE
-                        textViewError.visibility = View.INVISIBLE
+                        progressBar.visibility = View.GONE
+                        textViewError.visibility = View.GONE
                     }
                     is AsyncOperationResult.EmptyState -> {
-                        progressBar.visibility = View.INVISIBLE
-                        textViewError.visibility = View.INVISIBLE
+                        progressBar.visibility = View.GONE
+                        textViewError.visibility = View.GONE
                     }
                     is AsyncOperationResult.Loading -> {
                         progressBar.visibility = View.VISIBLE
-                        textViewError.visibility = View.INVISIBLE
+                        textViewError.visibility = View.GONE
                     }
                     is AsyncOperationResult.Failure -> {
+                        binding.pinViewOTP.text?.clear()
+
                         textViewError.text = "Неверный код"
 
-                        progressBar.visibility = View.INVISIBLE
+                        progressBar.visibility = View.GONE
                         textViewError.visibility = View.VISIBLE
                     }
                 }

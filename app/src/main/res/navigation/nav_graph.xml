@@ -41,5 +41,24 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.messanger.presentation.fragment.home.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_accountSettings"
+            app:destination="@id/accountSettings"
+            app:popUpTo="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountSettings"
+        android:name="com.example.messanger.presentation.fragment.home.settings.AccountSettings"
+        android:label="fragment_account_settings"
+        tools:layout="@layout/fragment_account_settings" />
 </navigation>
