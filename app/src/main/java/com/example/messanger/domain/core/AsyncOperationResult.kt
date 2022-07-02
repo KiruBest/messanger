@@ -1,6 +1,6 @@
 package com.example.messanger.domain.core
 
-import kotlin.Exception
+import java.lang.Exception
 
 sealed class AsyncOperationResult<out T> {
     class Loading<out T>: AsyncOperationResult<T>()

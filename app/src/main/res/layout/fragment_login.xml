@@ -32,6 +32,7 @@
         style="@style/ThemeOverlay.Material3.TextInputEditText.AuthenticationEditText"
         android:layout_marginTop="50dp"
         android:hint="@string/login_fragment_login"
+        android:text="+79234299584"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,6 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
