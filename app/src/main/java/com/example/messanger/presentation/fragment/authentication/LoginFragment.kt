@@ -12,9 +12,7 @@ import com.example.messanger.R
 import com.example.messanger.databinding.FragmentLoginBinding
 import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.presentation.core.validateNumber
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
@@ -32,8 +30,6 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        Log.i("User", FirebaseAuth.getInstance().currentUser?.uid.toString())
 
         val progressBar = binding.progressBarLogIn
         val textViewError = binding.textViewErrorLogIn
@@ -56,7 +52,6 @@ class LoginFragment : Fragment() {
             viewModel.loginFlow.collect { result ->
                 when(result) {
                     is AsyncOperationResult.Success -> {
-                        Log.i("TAG11", "FUCK")
                         findNavController().navigate(R.id.action_loginFragment_to_otpFragment)
                         progressBar.visibility = View.INVISIBLE
                         textViewError.visibility = View.INVISIBLE
@@ -75,6 +70,14 @@ class LoginFragment : Fragment() {
 
                         textViewError.text = result.exception.message
                     }
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.userAuthFlow.collect { userAuth ->
+                if (userAuth) {
+                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                 }
             }
         }

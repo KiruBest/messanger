@@ -9,4 +9,6 @@
     <string name="auth_fragment_otp">На ваш номер телефона был отправлен \n код аутентификации</string>
     <string name="resend_fragment_otp">Не получили код?</string>
     <string name="resend_bt_fragment_otp">Отправить \n снова</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

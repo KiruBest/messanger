@@ -1,6 +1,5 @@
 package com.example.messanger.data.repository
 
-import android.content.ContentValues
 import android.util.Log
 import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.domain.repository.IAccountService
@@ -13,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class AccountService(
@@ -87,4 +85,10 @@ class AccountService(
                 }
             }
         }
+
+    override fun userAuthCheck(): Boolean = firebaseAuth.currentUser != null
+
+    override fun logOut() {
+        firebaseAuth.signOut()
+    }
 }

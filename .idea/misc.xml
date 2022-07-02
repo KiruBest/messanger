@@ -9,7 +9,8 @@
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/login_background_circle.xml" value="0.2555" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/temp.xml" value="0.2555" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/activity_main.xml" value="0.152" />
-        <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_login.xml" value="0.128" />
+        <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_home.xml" value="0.22644927536231885" />
+        <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_login.xml" value="0.2" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_otp.xml" value="0.22644927536231885" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_registration.xml" value="0.10989583333333333" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/messanger/app/src/main/res/drawable/authentification_background_edit_text.xml" value="0.1625" />

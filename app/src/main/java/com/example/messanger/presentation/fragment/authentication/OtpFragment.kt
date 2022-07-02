@@ -53,7 +53,7 @@ class OtpFragment : Fragment() {
             viewModel.codeSentFlow.collect { result ->
                 when(result) {
                     is AsyncOperationResult.Success -> {
-                        Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(R.id.action_otpFragment_to_homeFragment)
 
                         progressBar.visibility = View.INVISIBLE
                         textViewError.visibility = View.INVISIBLE
