@@ -7,26 +7,7 @@
     android:background="#33BEE7"
     tools:context=".presentation.fragment.authentication.OtpFragment">
 
-    <View
-        android:id="@+id/viewOTP"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ic_login_background_circle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="1" />
-
-    <ImageView
-        android:id="@+id/imageOTP"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/ic_gazprom"
-        app:layout_constraintBottom_toBottomOf="@id/viewOTP"
-        app:layout_constraintEnd_toEndOf="@id/viewOTP"
-        app:layout_constraintStart_toStartOf="@id/viewOTP" />
+    <include layout="@layout/logo_layout" />
 
     <TextView
         android:id="@+id/textViewOTPHeading"
@@ -37,7 +18,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationHeadingTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewOTP" />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <TextView
         android:id="@+id/textViewOTP"
@@ -51,26 +32,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewOTPHeading" />
 
-    <EditText
-        android:id="@+id/editTextOTP"
-        style="@style/ThemeOverlay.Material3.TextInputEditText.AuthenticationEditText"
+    <com.chaos.view.PinView
+        android:id="@+id/pinViewOTP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="@string/login_fragment_login"
-        android:inputType="textPersonName"
+        android:cursorVisible="true"
+        android:inputType="number"
+        app:cursorColor="@color/black"
+        app:hideLineWhenFilled="true"
+        app:itemCount="6"
+        app:itemRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewOTP" />
+
 
     <ProgressBar
         android:id="@+id/progressBarOTP"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:visibility="visible"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLogOTP"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextOTP" />
+        app:layout_constraintTop_toBottomOf="@+id/pinViewOTP" />
 
     <TextView
         android:id="@+id/textViewErrorOTP"
@@ -80,21 +67,21 @@
         android:text="@string/error_fragment_login"
         android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationEditText"
         android:textColor="#CCFB2727"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBarOTP" />
+        app:layout_constraintTop_toBottomOf="@+id/pinViewOTP" />
 
     <Button
         android:id="@+id/buttonLogOTP"
         style="@style/ShapeAppearanceOverlay.Material3.Button.BlackButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="80dp"
         android:text="@string/continue_fragment_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewErrorOTP" />
+        app:layout_constraintTop_toBottomOf="@+id/pinViewOTP" />
 
     <TextView
         android:id="@+id/textViewOTPResend"
