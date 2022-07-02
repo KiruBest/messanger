@@ -7,23 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.messanger.R
-import com.example.messanger.databinding.FragmentRegistrationBinding
+import com.example.messanger.databinding.FragmentLoginBinding
+import com.example.messanger.databinding.FragmentOtpBinding
 
-class RegistrationFragment : Fragment() {
+class OtpFragment : Fragment() {
 
-    private lateinit var binding: FragmentRegistrationBinding
+    private lateinit var binding: FragmentOtpBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentRegistrationBinding.inflate(inflater, container, false)
+        binding = FragmentOtpBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.button.setOnClickListener { findNavController().popBackStack(R.id.registrationFragment,true) }
+        binding.buttonLogOTP.setOnClickListener { findNavController().popBackStack(R.id.otpFragment,true) }
     }
 
 }

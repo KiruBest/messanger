@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.messanger.R
 import com.example.messanger.databinding.FragmentLoginBinding
-import com.google.firebase.auth.FirebaseAuth
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
 

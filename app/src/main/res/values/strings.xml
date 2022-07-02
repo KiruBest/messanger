@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">GazpromMessenger</string>
-    <string name="login_fragment_login">Логин</string>
-    <string name="password_fragment_login">Пароль</string>
+    <string name="login_fragment_login">+7-(999)-999-99-99</string>
+    <string name="welcome_fragment_login">Добро пожаловать!</string>
+    <string name="number_fragment_login">Введите ваш номер телефона \n для создания аккаунта</string>
     <string name="error_fragment_login">Неверный логин или пароль</string>
-    <string name="log_in_fragment_login">Войти</string>
-    <string name="registration_fragment_login">Регистрация</string>
+    <string name="continue_fragment_login">Продолжить</string>
+    <string name="otp_fragment_otp">Аутентификация</string>
+    <string name="auth_fragment_otp">На ваш номер телефона был отправлен \n код аутентификации</string>
+    <string name="resend_fragment_otp">Не получили код?</string>
+    <string name="resend_bt_fragment_otp">Отправить \n снова</string>
 </resources>
