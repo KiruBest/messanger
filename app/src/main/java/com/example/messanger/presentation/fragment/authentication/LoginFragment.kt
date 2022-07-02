@@ -14,6 +14,7 @@ import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.presentation.core.validateNumber
 import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.redmadrobot.inputmask.MaskedTextChangedListener
 
 class LoginFragment : Fragment() {
 
@@ -81,5 +82,13 @@ class LoginFragment : Fragment() {
                 }
             }
         }
+        binding.buttonLogIn.setOnClickListener { findNavController().navigate(R.id.action_loginFragment_to_otpFragment) }
+
+        binding.editTextLogIn.addTextChangedListener(
+            MaskedTextChangedListener(
+                "+7 ([000]) [000]-[00]-[00]",
+                binding.editTextLogIn
+            )
+        )
     }
 }
