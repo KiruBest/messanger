@@ -10,6 +10,6 @@ interface IAccountService {
     suspend fun getCurrentUser(): AsyncOperationResult<UserDto>
     suspend fun updateUserParams(userDto: UserDto): AsyncOperationResult<Boolean>
     suspend fun updateUserState(state: UserState): AsyncOperationResult<UserDto>
+    suspend fun logOut()
     fun userAuthCheck(): Boolean
-    fun logOut()
 }

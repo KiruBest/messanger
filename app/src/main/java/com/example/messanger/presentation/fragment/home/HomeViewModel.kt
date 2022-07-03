@@ -26,7 +26,9 @@ class HomeViewModel(
     }
 
     fun logOut() {
-        accountService.logOut()
+        viewModelScope.launch {
+            accountService.logOut()
+        }
     }
 
     fun updateUserState(state: UserState) {

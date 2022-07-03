@@ -17,7 +17,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.getValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
@@ -85,11 +84,13 @@ class AccountService(
                         if (task.isSuccessful) {
 
                             firebaseAuth.currentUser?.let { user ->
-                                firebaseReference.child(USERS_REF).child(user.uid).setValue(mapOf(
-                                    "id" to user.uid,
-                                    "phone" to user.phoneNumber,
-                                    USER_STATUS to UserState.ONLINE
-                                ))
+                                firebaseReference.child(USERS_REF).child(user.uid).setValue(
+                                    mapOf(
+                                        "id" to user.uid,
+                                        "phone" to user.phoneNumber,
+                                        USER_STATUS to UserState.ONLINE
+                                    )
+                                )
                             }
 
                             continuation.resume(AsyncOperationResult.Success(task.result.user != null))
@@ -111,8 +112,11 @@ class AccountService(
 
     override fun userAuthCheck(): Boolean = firebaseAuth.currentUser != null
 
-    override fun logOut() {
-        firebaseAuth.signOut()
+    override suspend fun logOut() {
+        withContext(Dispatchers.IO) {
+            firebaseAuth.signOut()
+            updateUserState(UserState.ONLINE)
+        }
     }
 
     override suspend fun getCurrentUser(): AsyncOperationResult<UserDto> =
@@ -147,11 +151,13 @@ class AccountService(
             }
         }
 
-    override suspend fun updateUserState(state: UserState): AsyncOperationResult<UserDto> = withContext(Dispatchers.IO) {
-        suspendCoroutine { continuation ->
-            firebaseAuth.currentUser?.uid?.let { userId ->
-                firebaseReference.child(USERS_REF).child(userId).child(USER_STATUS).setValue(state.state)
-            } ?: continuation.resume(AsyncOperationResult.Failure(UserUnAuthException()))
+    override suspend fun updateUserState(state: UserState): AsyncOperationResult<UserDto> =
+        withContext(Dispatchers.IO) {
+            suspendCoroutine { continuation ->
+                firebaseAuth.currentUser?.uid?.let { userId ->
+                    firebaseReference.child(USERS_REF).child(userId).child(USER_STATUS)
+                        .setValue(state.state)
+                } ?: continuation.resume(AsyncOperationResult.Failure(UserUnAuthException()))
+            }
         }
-    }
 }
