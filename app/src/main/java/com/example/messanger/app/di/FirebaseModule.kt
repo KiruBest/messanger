@@ -1,8 +1,10 @@
 package com.example.messanger.app.di
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import org.koin.dsl.module
 
 val firebaseModule = module {
-    factory { FirebaseAuth.getInstance() }
+    single { FirebaseAuth.getInstance() }
+    single { FirebaseDatabase.getInstance().reference }
 }

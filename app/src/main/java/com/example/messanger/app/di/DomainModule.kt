@@ -5,5 +5,5 @@ import com.example.messanger.domain.repository.IAccountService
 import org.koin.dsl.module
 
 val domainModule = module {
-    single<IAccountService> { AccountService(get()) }
+    single<IAccountService> { AccountService(get(), get()) }
 }

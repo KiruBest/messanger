@@ -8,19 +8,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.messanger.R
 import com.example.messanger.databinding.FragmentHomeBinding
+import com.example.messanger.domain.core.AsyncOperationResult
+import com.example.messanger.domain.core.UserState
+import com.example.messanger.domain.model.UserDto
+import com.example.messanger.presentation.core.BaseFragment
 import com.example.messanger.presentation.fragment.authentication.LoginViewModel
+import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel: LoginViewModel by viewModel()
+    private val viewModel: HomeViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +38,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val toolbar = binding.toolbar
 
         binding.buttonNewChat.setOnClickListener {
             viewModel.logOut()
@@ -50,33 +58,48 @@ class HomeFragment : Fragment() {
             binding.buttonNewChat.visibility = View.GONE
         }
 
-        binding.toolbar.inflateMenu(R.menu.account_menu)
+        lifecycleScope.launchWhenCreated {
+            viewModel.userDtoFlow.collect { value ->
+                when(value) {
+                    is AsyncOperationResult.Success -> {
+                        toolbar.inflateMenu(R.menu.account_menu)
 
-        Glide.with(requireContext()).asDrawable()
-            .circleCrop()
-            .placeholder(R.drawable.ic_baseline_account_circle)
-            .load("https://userpic.fishki.net/2020/08/22/1618868/da70406ad3ef69590e4410f9bf3d1964.jpg")
-            .into(object : CustomTarget<Drawable>() {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    binding.toolbar.menu.findItem(R.id.accountMenu).icon = resource
-                }
+                        toolbar.setOnMenuItemClickListener {
+                            when (it.itemId) {
+                                R.id.accountSettingsMenu -> {
+                                    findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
+                                    true
+                                }
+                                else -> false
+                            }
+                        }
 
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    binding.toolbar.menu.findItem(R.id.accountMenu).icon = placeholder
-                }
-            })
+                        Glide.with(requireContext()).asDrawable()
+                            .circleCrop()
+                            .placeholder(R.drawable.ic_baseline_account_circle)
+                            .load(value.data.avatarUrl)
+                            .into(object : CustomTarget<Drawable>() {
+                                override fun onResourceReady(
+                                    resource: Drawable,
+                                    transition: Transition<in Drawable>?
+                                ) {
+                                    toolbar.menu.findItem(R.id.accountMenu).icon = resource
+                                }
 
-        binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.accountSettingsMenu -> {
-                    findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
-                    true
+                                override fun onLoadCleared(placeholder: Drawable?) {
+                                    toolbar.menu.findItem(R.id.accountMenu).icon = placeholder
+                                }
+                            })
+                    }
+                    is AsyncOperationResult.EmptyState -> TODO()
+                    is AsyncOperationResult.Failure -> TODO()
+                    is AsyncOperationResult.Loading -> {
+                        Toast.makeText(requireContext(), "Loading", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                else -> false
             }
         }
+
+        viewModel.getCurrentUser()
     }
 }

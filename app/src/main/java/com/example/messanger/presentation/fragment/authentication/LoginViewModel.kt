@@ -3,6 +3,7 @@ package com.example.messanger.presentation.fragment.authentication
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messanger.domain.core.AsyncOperationResult
+import com.example.messanger.domain.model.UserDto
 import com.example.messanger.domain.repository.IAccountService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,9 +38,5 @@ class LoginViewModel(
             val result = accountService.sentAuthCode(code)
             _codeSentFlow.tryEmit(result)
         }
-    }
-
-    fun logOut() {
-        accountService.logOut()
     }
 }

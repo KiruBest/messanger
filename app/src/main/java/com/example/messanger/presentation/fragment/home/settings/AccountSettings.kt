@@ -7,8 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.messanger.R
 import com.example.messanger.databinding.FragmentAccountSettingsBinding
+import com.example.messanger.presentation.core.BaseFragment
 
-class AccountSettings : Fragment() {
+class AccountSettings : BaseFragment() {
 
     private lateinit var binding: FragmentAccountSettingsBinding
 
