@@ -1,11 +1,12 @@
 package com.example.messanger.data.repository
 
 import android.util.Log
+import com.example.messanger.data.core.Constants.USERS_REF
+import com.example.messanger.data.core.Constants.USER_ID
+import com.example.messanger.data.core.Constants.USER_PHONE
+import com.example.messanger.data.core.Constants.USER_STATUS
 import com.example.messanger.data.core.mapToUserDto
-import com.example.messanger.domain.core.AsyncOperationResult
-import com.example.messanger.domain.core.DatabaseReadDataException
-import com.example.messanger.domain.core.UserState
-import com.example.messanger.domain.core.UserUnAuthException
+import com.example.messanger.domain.core.*
 import com.example.messanger.domain.model.UserDto
 import com.example.messanger.domain.repository.IAccountService
 import com.google.firebase.FirebaseException
@@ -22,9 +23,6 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-
-private const val USERS_REF = "Users"
-private const val USER_STATUS = "status"
 
 class AccountService(
     private val firebaseAuth: FirebaseAuth,
@@ -44,7 +42,7 @@ class AccountService(
 
                 override fun onVerificationFailed(e: FirebaseException) {
                     Log.w("onVerificationFailed", "onVerificationFailed", e)
-                    continuation.resume(AsyncOperationResult.Failure(e))
+                    continuation.resume(AsyncOperationResult.Failure(VerificationFailedException("Не удалось пройти верефикацию")))
                 }
 
                 override fun onCodeSent(
@@ -52,7 +50,6 @@ class AccountService(
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
                     super.onCodeSent(verificationId, token)
-
                     Log.d("codeSent", "codeSent:$verificationId")
 
                     storedVerificationId = verificationId
@@ -74,23 +71,18 @@ class AccountService(
 
     override suspend fun sentAuthCode(code: String): AsyncOperationResult<Boolean> =
         withContext(Dispatchers.IO) {
-
-
             suspendCoroutine { continuation ->
                 val credential =
                     storedVerificationId?.let { PhoneAuthProvider.getCredential(it, code) }
                 credential?.let {
                     firebaseAuth.signInWithCredential(it).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-
                             firebaseAuth.currentUser?.let { user ->
-                                firebaseReference.child(USERS_REF).child(user.uid).setValue(
-                                    mapOf(
-                                        "id" to user.uid,
-                                        "phone" to user.phoneNumber,
-                                        USER_STATUS to UserState.ONLINE
-                                    )
-                                )
+                                val refToUser = firebaseReference.child(USERS_REF).child(user.uid)
+
+                                refToUser.child(USER_ID).setValue(user.uid)
+                                refToUser.child(USER_PHONE).setValue(user.phoneNumber)
+                                refToUser.child(USER_STATUS).setValue(UserState.ONLINE.state)
                             }
 
                             continuation.resume(AsyncOperationResult.Success(task.result.user != null))
@@ -99,7 +91,11 @@ class AccountService(
                                 task.result.user?.uid.toString()
                             )
                         } else {
-                            continuation.resume(AsyncOperationResult.Failure(task.exception!!))
+                            continuation.resume(
+                                AsyncOperationResult.Failure(
+                                    VerificationFailedException("Не удалось пройти верефикацию")
+                                )
+                            )
                             Log.i(
                                 "onVerificationFailedCodeSent",
                                 task.exception?.message.toString()
@@ -112,8 +108,20 @@ class AccountService(
 
     override fun userAuthCheck(): Boolean = firebaseAuth.currentUser != null
 
-    override suspend fun logOut() {
-        firebaseAuth.signOut()
+    override suspend fun logOut(): AsyncOperationResult<Boolean> = withContext(Dispatchers.IO) {
+        suspendCoroutine { continuation ->
+            firebaseAuth.currentUser?.uid?.let {
+                firebaseReference.child(USERS_REF).child(it).child(USER_STATUS)
+                    .setValue(UserState.OFFLINE.state).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            firebaseAuth.signOut()
+                            continuation.resume(AsyncOperationResult.Success(firebaseAuth.currentUser == null))
+                        } else {
+                            continuation.resume(AsyncOperationResult.Failure(DatabaseReadDataException()))
+                        }
+                    }
+            }
+        }
     }
 
     override suspend fun getCurrentUser(): AsyncOperationResult<UserDto> =

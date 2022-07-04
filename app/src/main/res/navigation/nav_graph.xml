@@ -45,6 +45,10 @@
             android:id="@+id/action_homeFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"
             app:popUpTo="@id/homeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addCompanionFragment"
+            app:destination="@id/addCompanionFragment"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -61,4 +65,9 @@
         android:name="com.example.messanger.presentation.fragment.home.settings.AccountSettings"
         android:label="fragment_account_settings"
         tools:layout="@layout/fragment_account_settings" />
+    <fragment
+        android:id="@+id/addCompanionFragment"
+        android:name="com.example.messanger.presentation.fragment.home.AddCompanionFragment"
+        android:label="fragment_add_companion"
+        tools:layout="@layout/fragment_add_companion" />
 </navigation>
