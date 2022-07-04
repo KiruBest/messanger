@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.example.messanger.R
 import com.example.messanger.databinding.FragmentAccountSettingsBinding
 import com.example.messanger.presentation.core.BaseFragment
+import com.redmadrobot.inputmask.MaskedTextChangedListener
 
 class AccountSettings : BaseFragment() {
 
@@ -23,5 +24,12 @@ class AccountSettings : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.editTextPhone.addTextChangedListener(
+            MaskedTextChangedListener(
+                "+7 ([000]) [000]-[00]-[00]",
+                binding.editTextPhone
+            )
+        )
     }
 }

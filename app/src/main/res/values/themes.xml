@@ -76,5 +76,38 @@
         <item name="android:letterSpacing">0.05</item>
         <item name="android:fontFamily">@font/roboto_condensed_bold</item>
     </style>
+    
+    <style name="ThemeOverlay.Material3.TextInputEditText.AccountSettingsEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">31dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.AccountSettingsEditText</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.AccountSettingsEditText">
+        <item name="android:fontFamily">@font/roboto_condensed_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.Material3.Button.BlueButton">
+        <item name="android:backgroundTint">#33BEE7</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">22dp</item>
+        <item name="android:layout_marginEnd">22dp</item>
+        <item name="cornerRadius">30dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.ButtonText</item>
+        <item name="android:textColor">#F2F5F5F5</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.AccountSettingsToolbarTitle">
+        <item name="android:fontFamily">@font/roboto_condensed_bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
 
 </resources>
