@@ -113,10 +113,7 @@ class AccountService(
     override fun userAuthCheck(): Boolean = firebaseAuth.currentUser != null
 
     override suspend fun logOut() {
-        withContext(Dispatchers.IO) {
-            firebaseAuth.signOut()
-            updateUserState(UserState.ONLINE)
-        }
+        firebaseAuth.signOut()
     }
 
     override suspend fun getCurrentUser(): AsyncOperationResult<UserDto> =
