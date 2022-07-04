@@ -31,15 +31,15 @@ class OtpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val progressBar = binding.progressBarOTP
+        val pinViewOTP = binding.pinViewOTP
         val textViewError = binding.textViewErrorOTP
 
         binding.buttonLogOTP.setOnClickListener {
-            val code = binding.pinViewOTP.text.toString()
+            val code = pinViewOTP.text.toString()
             val error = code.validateCode()
 
             if (error != "") {
                 textViewError.visibility = View.VISIBLE
-
                 textViewError.text = error
             } else {
                 viewModel.sentAuthCode(code)
