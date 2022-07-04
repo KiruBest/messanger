@@ -5,70 +5,75 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#33BEE7"
-    tools:context=".presentation.fragment.authentication.LoginFragment">
+    tools:context=".presentation.fragment.authentication.OtpFragment">
 
-    <include layout="@layout/logo_layout"/>
+    <include layout="@layout/logo_layout" />
 
     <TextView
-        android:id="@+id/textViewLogInHeading"
+        android:id="@+id/textViewOTPHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/welcome_fragment_login"
+        android:text="@string/otp_fragment_otp"
         android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationHeadingTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <TextView
-        android:id="@+id/textViewLogIn"
+        android:id="@+id/textViewOTP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationTextView"
         android:gravity="center_horizontal"
-        android:text="@string/number_fragment_login"
+        android:text="@string/auth_fragment_otp"
+        android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLogInHeading" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewOTPHeading" />
 
-    <EditText
-        android:id="@+id/editTextLogIn"
-        style="@style/ThemeOverlay.Material3.TextInputEditText.AuthenticationEditText"
+    <com.chaos.view.PinView
+        android:id="@+id/pinViewOTP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:digits="+-() 1234567890"
-        android:hint="@string/login_fragment_login"
+        android:cursorVisible="true"
         android:inputType="number"
+        app:cursorColor="@color/black"
+        app:hideLineWhenFilled="true"
+        app:itemCount="6"
+        app:itemRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewOTP" />
+
 
     <ProgressBar
-        android:id="@+id/progressBarLogIn"
+        android:id="@+id/progressBarOTP"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/buttonLogIn"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLogOTP"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/pinViewOTP" />
 
     <TextView
-        android:id="@+id/textViewErrorLogIn"
+        android:id="@+id/textViewErrorOTP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/error_fragment_login"
-        android:layout_marginTop="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationEditText"
         android:textColor="#CCFB2727"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/pinViewOTP" />
 
     <Button
-        android:id="@+id/buttonLogIn"
+        android:id="@+id/buttonLogOTP"
         style="@style/ShapeAppearanceOverlay.Material3.Button.BlackButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -76,6 +81,30 @@
         android:text="@string/continue_fragment_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/pinViewOTP" />
+
+    <TextView
+        android:id="@+id/textViewOTPResend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_condensed_italic"
+        android:letterSpacing="0.05"
+        android:text="@string/resend_fragment_otp"
+        android:textColor="@color/white"
+        android:textSize="17dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogOTP" />
+
+    <Button
+        android:id="@+id/buttonOTPResend"
+        style="@style/Widget.Material3.Button.OutlinedButton.ResendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="55dp"
+        android:text="@string/resend_bt_fragment_otp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogOTP" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
