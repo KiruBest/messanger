@@ -8,26 +8,7 @@
     android:background="#33BEE7"
     tools:context=".presentation.fragment.authentication.LoginFragment">
 
-    <View
-        android:id="@+id/viewLogIn"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ic_login_background_circle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="1" />
-
-    <ImageView
-        android:id="@+id/imageViewLogIn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/ic_gazprom"
-        app:layout_constraintBottom_toBottomOf="@id/viewLogIn"
-        app:layout_constraintEnd_toEndOf="@id/viewLogIn"
-        app:layout_constraintStart_toStartOf="@id/viewLogIn" />
+    <include layout="@layout/logo_layout"/>
 
     <TextView
         android:id="@+id/textViewLogInHeading"
@@ -38,16 +19,16 @@
         android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationHeadingTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <TextView
         android:id="@+id/textViewLogIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationTextView"
         android:gravity="center_horizontal"
         android:text="@string/number_fragment_login"
-        android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewLogInHeading" />
@@ -56,9 +37,9 @@
         android:id="@+id/editTextLogIn"
         style="@style/ThemeOverlay.Material3.TextInputEditText.AuthenticationEditText"
         android:layout_marginTop="16dp"
+        android:digits="+-() 1234567890"
         android:hint="@string/login_fragment_login"
-        android:inputType="textPersonName"
-        android:text="+1 655-855-3822"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewLogIn" />
@@ -68,8 +49,8 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:visibility="invisible"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLogIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextLogIn" />
@@ -78,25 +59,24 @@
         android:id="@+id/textViewErrorLogIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="@string/error_fragment_login"
+        android:layout_marginTop="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationEditText"
         android:textColor="#CCFB2727"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBarLogIn" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextLogIn" />
 
     <Button
         android:id="@+id/buttonLogIn"
         style="@style/ShapeAppearanceOverlay.Material3.Button.BlackButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="80dp"
         android:text="@string/continue_fragment_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewErrorLogIn" />
-
+        app:layout_constraintTop_toBottomOf="@+id/editTextLogIn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
