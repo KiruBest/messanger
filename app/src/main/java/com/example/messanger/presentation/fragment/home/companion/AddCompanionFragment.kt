@@ -38,7 +38,6 @@ class AddCompanionFragment : BaseFragment() {
 
         val toolbar = binding.toolbar
 
-        toolbar.inflateMenu(R.menu.search_menu)
         val searchView: SearchView = toolbar.menu.findItem(R.id.app_bar_search).actionView as SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

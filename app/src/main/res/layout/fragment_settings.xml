@@ -14,10 +14,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="?android:attr/actionModeWebSearchDrawable"
+        app:menu="@menu/search_menu"
         app:title="@string/settings_fragment_settings"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.AccountSettingsToolbarTitle"
-        app:titleTextColor="#33BEE7" />
+        app:titleTextColor="@color/aqua_color" />
 
     <ImageView
         android:id="@+id/imageViewSettings"

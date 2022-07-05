@@ -13,6 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/search_menu"
         app:navigationIcon="?homeAsUpIndicator"
         app:title="Добавить собеседника"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.AccountSettingsToolbarTitle"
