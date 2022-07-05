@@ -1,6 +1,7 @@
 package com.example.messanger.presentation.fragment.authentication
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.presentation.core.validateCode
 import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class OtpFragment : Fragment() {
 
@@ -74,6 +76,16 @@ class OtpFragment : Fragment() {
                 }
             }
         }
+
+        object : CountDownTimer(60000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.textViewTimer.text = (millisUntilFinished / 1000).toString()
+            }
+            override fun onFinish() {
+                binding.textViewTimer.text = "Код отправлен повторно!"
+            }
+        }.start()
+
 
     }
 
