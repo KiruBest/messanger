@@ -71,6 +71,10 @@ class HomeFragment : BaseFragment() {
                                     findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
                                     true
                                 }
+                                R.id.logOut -> {
+                                    viewModel.logOut()
+                                    true
+                                }
                                 else -> false
                             }
                         }

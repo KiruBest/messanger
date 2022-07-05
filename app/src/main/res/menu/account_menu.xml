@@ -15,6 +15,9 @@
             <item
                 android:id="@+id/accountSettingsMenu"
                 android:title="Настройки" />
+            <item
+                android:id="@+id/logOut"
+                android:title="Выйти" />
         </menu>
     </item>
 </menu>

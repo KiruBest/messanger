@@ -5,5 +5,5 @@ data class MessageDto(
     var text: String,
     var type: String,
     val from: String,
-    val timestamp: MutableMap<String, String>
+    val timestamp: Long
 )
