@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/ic_baseline_account_circle.xml" value="0.2555" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.2555" />
+        <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.2555" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/ic_gazprom.xml" value="0.242" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/ic_login_background_circle.xml" value="0.2555" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/drawable/ic_new_chat.xml" value="0.2555" />
@@ -15,7 +16,7 @@
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/companion_item_layout.xml" value="0.536" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_account_settings.xml" value="0.22644927536231885" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_add_companion.xml" value="0.25" />
-        <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_chat.xml" value="0.4" />
+        <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_chat.xml" value="0.2" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_chips.xml" value="0.22644927536231885" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_home.xml" value="0.264" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_login.xml" value="0.2" />
@@ -23,6 +24,7 @@
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_registration.xml" value="0.10989583333333333" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/fragment_settings.xml" value="0.22644927536231885" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/layout/logo_layout.xml" value="0.25" />
+        <entry key="..\:/Programmist/messanger/app/src/main/res/layout/single_chat_message_layout.xml" value="0.25" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/menu/account_menu.xml" value="0.25" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/menu/chat_menu.xml" value="0.25" />
         <entry key="..\:/Programmist/messanger/app/src/main/res/menu/search_menu.xml" value="0.25" />

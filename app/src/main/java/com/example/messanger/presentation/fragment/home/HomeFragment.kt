@@ -55,6 +55,7 @@ class HomeFragment : BaseFragment() {
             binding.chipCalls.isChecked = true
             binding.chipChats.isChecked = false
             binding.buttonNewChat.visibility = View.GONE
+            viewModel.logOut()
         }
 
         lifecycleScope.launchWhenCreated {

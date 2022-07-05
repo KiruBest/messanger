@@ -10,4 +10,5 @@ object Constants {
     const val USER_AVATAR_URL = "avatarUrl"
 
     const val USERS_REF = "Users"
+    const val MESSAGE_REF = "Messages"
 }
