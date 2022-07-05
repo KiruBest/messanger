@@ -9,7 +9,6 @@
     <string name="auth_fragment_otp">На ваш номер телефона был отправлен \n код аутентификации</string>
     <string name="resend_fragment_otp">Не получили код?</string>
     <string name="resend_bt_fragment_otp">Отправить \n снова</string>
-    <string name="account">account</string>
     <string name="account_fragment_account_set">Аккаунт</string>
     <string name="change_photo_fragment_account_set">Сменить фото</string>
     <string name="first_name_fragment_account_set">Иван</string>
@@ -18,5 +17,9 @@
     <string name="birthdate_fragment_account_set">10.09.1992</string>
     <string name="save_fragment_account_set">Сохранить</string>
     <string name="settings_fragment_settings">Настройки</string>
+    <string name="status_fragment_settings">Укажите статус</string>
+    <string name="account_fragment_settings">Аккаунт</string>
+    <string name="notification_fragment_settings">Уведомления</string>
+
 
 </resources>

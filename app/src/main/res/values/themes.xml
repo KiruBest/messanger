@@ -17,7 +17,7 @@
     <style name="TextAppearance.AppCompat.Body">
         <item name="android:fontFamily">@font/roboto_condensed_regular</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:textFontWeight">800</item>
+        <item name="android:textFontWeight">500</item>
     </style>
 
     <style name="TextAppearance.AppCompat.ButtonText">
@@ -106,6 +106,21 @@
     <style name="TextAppearance.AppCompat.AccountSettingsToolbarTitle">
         <item name="android:fontFamily">@font/roboto_condensed_bold</item>
         <item name="android:textSize">22sp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.NameTextView">
+        <item name="android:fontFamily">@font/roboto_condensed_regular</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#33BEE7</item>
+        <item name="android:textFontWeight">800</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.StatusEditText">
+        <item name="android:fontFamily">@font/roboto_condensed_regular</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:textFontWeight">500</item>
         <item name="android:letterSpacing">0.05</item>
     </style>
