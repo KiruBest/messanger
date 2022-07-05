@@ -9,5 +9,12 @@ object Constants {
     const val USER_L_NAME = "lName"
     const val USER_AVATAR_URL = "avatarUrl"
 
+    const val MESSAGE_ID = "id"
+    const val MESSAGE_TEXT = "text"
+    const val MESSAGE_TYPE = "type"
+    const val MESSAGE_FROM = "from"
+    const val MESSAGE_TIMESTAMP = "timestamp"
+
     const val USERS_REF = "Users"
+    const val MESSAGE_REF = "Messages"
 }
