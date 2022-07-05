@@ -42,8 +42,7 @@ class HomeFragment : BaseFragment() {
         val toolbar = binding.toolbar
 
         binding.buttonNewChat.setOnClickListener {
-            viewModel.logOut()
-            findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_addCompanionFragment)
         }
 
         binding.chipChats.setOnClickListener {
@@ -62,6 +61,7 @@ class HomeFragment : BaseFragment() {
             viewModel.userDtoFlow.collect { value ->
                 when(value) {
                     is AsyncOperationResult.Success -> {
+                        toolbar.menu.clear()
                         toolbar.inflateMenu(R.menu.account_menu)
 
                         toolbar.setOnMenuItemClickListener {
@@ -90,11 +90,26 @@ class HomeFragment : BaseFragment() {
                                     toolbar.menu.findItem(R.id.accountMenu).icon = placeholder
                                 }
                             })
+
+                        binding.progressBar.visibility = View.GONE
                     }
                     is AsyncOperationResult.EmptyState -> TODO()
                     is AsyncOperationResult.Failure -> TODO()
-                    is AsyncOperationResult.Loading -> {
-                        Toast.makeText(requireContext(), "Loading", Toast.LENGTH_SHORT).show()
+                    is AsyncOperationResult.Loading -> binding.progressBar.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.logOutFlow.collect { result ->
+                when(result) {
+                    is AsyncOperationResult.EmptyState -> binding.progressBar.visibility = View.GONE
+                    is AsyncOperationResult.Failure -> {}
+                    is AsyncOperationResult.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is AsyncOperationResult.Success -> {
+                        binding.progressBar.visibility = View.GONE
+
+                        if (result.data) findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
                     }
                 }
             }

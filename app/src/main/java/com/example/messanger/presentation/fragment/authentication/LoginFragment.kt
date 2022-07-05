@@ -1,6 +1,7 @@
 package com.example.messanger.presentation.fragment.authentication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +12,11 @@ import com.example.messanger.R
 import com.example.messanger.databinding.FragmentLoginBinding
 import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.presentation.core.validateNumber
-import com.redmadrobot.inputmask.MaskedTextChangedListener
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.redmadrobot.inputmask.MaskedTextChangedListener
 
 class LoginFragment : Fragment() {
 
@@ -30,6 +33,8 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        Log.i("User", FirebaseAuth.getInstance().currentUser?.uid.toString())
 
         val progressBar = binding.progressBarLogIn
         val textViewError = binding.textViewErrorLogIn

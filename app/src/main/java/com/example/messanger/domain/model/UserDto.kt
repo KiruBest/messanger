@@ -1,5 +1,7 @@
 package com.example.messanger.domain.model
 
+import java.io.Serializable
+
 data class UserDto(
     val id: String,
     var username: String,
@@ -8,4 +10,4 @@ data class UserDto(
     var status: String,
     var avatarUrl: String,
     var phone: String
-)
+): Serializable
