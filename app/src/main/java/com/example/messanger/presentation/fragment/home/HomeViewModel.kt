@@ -50,9 +50,19 @@ class HomeViewModel(
     }
 
     fun getUsersList() {
+        if (_usersListFlow.value !is AsyncOperationResult.Loading) {
+            _usersListFlow.value = AsyncOperationResult.Loading()
+        }
+
         viewModelScope.launch {
             val result = messengerService.getUsersList()
             _usersListFlow.value = result
+            _usersListFlow.value = AsyncOperationResult.EmptyState()
         }
+    }
+
+    fun filter(newText: String?) {
+        val result = messengerService.searchUser(newText)
+        _usersListFlow.value = AsyncOperationResult.Success(result)
     }
 }

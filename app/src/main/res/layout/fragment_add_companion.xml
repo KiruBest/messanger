@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.fragment.home.AddCompanionFragment">
+    tools:context=".presentation.fragment.home.companion.AddCompanionFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,7 +14,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="?homeAsUpIndicator"
-        app:title="Хз" />
+        app:title="Добавить собеседника"
+        app:titleTextAppearance="@style/TextAppearance.AppCompat.AccountSettingsToolbarTitle"
+        app:titleTextColor="@color/aqua_color" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewUsers"

@@ -77,4 +77,18 @@
         <item name="android:fontFamily">@font/roboto_condensed_bold</item>
     </style>
 
+    <style name="TextAppearance.AppCompat.AccountSettingsToolbarTitle">
+        <item name="android:fontFamily">@font/roboto_condensed_bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.ToolbarSubtitle">
+        <item name="android:fontFamily">@font/roboto_condensed_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
 </resources>

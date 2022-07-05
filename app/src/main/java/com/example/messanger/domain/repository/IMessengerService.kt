@@ -5,4 +5,5 @@ import com.example.messanger.domain.model.UserDto
 
 interface IMessengerService {
     suspend fun getUsersList(): AsyncOperationResult<List<UserDto>>
+    fun searchUser(newText: String?): List<UserDto>
 }
