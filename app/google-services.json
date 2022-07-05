@@ -1,14 +1,14 @@
 {
-  "project_info": {
-    "project_number": "7681647111",
+  "информация_проекта": {
+    "номер_проекта": "7681647111",
     "firebase_url": "https://messanger-ff3a6-default-rtdb.firebaseio.com",
-    "project_id": "messanger-ff3a6",
+    "project_id": "мессенджер-ff3a6",
     "storage_bucket": "messanger-ff3a6.appspot.com"
   },
-  "client": [
+  "клиент": [
     {
-      "client_info": {
-        "mobilesdk_app_id": "1:7681647111:android:fc1fc21a3d51a57b9f00a2",
+      "информация_клиента": {
+        "mobilesdk_app_id": "1:7681647111:андроид:fc1fc21a3d51a57b9f00a2",
         "android_client_info": {
           "package_name": "com.example.messanger"
         }
@@ -16,7 +16,7 @@
       "oauth_client": [
         {
           "client_id": "7681647111-u0eon8hh7j113unenr5lhm5mlt3c2eb1.apps.googleusercontent.com",
-          "client_type": 1,
+          "тип_клиента": 1,
           "android_info": {
             "package_name": "com.example.messanger",
             "certificate_hash": "d44c6f7e460d7795bbe90e40df61e5706fdda207"
@@ -24,25 +24,25 @@
         },
         {
           "client_id": "7681647111-1kgobovjj8ahf5g1vqq029gs7d52n111.apps.googleusercontent.com",
-          "client_type": 3
+          "тип_клиента": 3
         }
       ],
-      "api_key": [
+      "апи_ключ": [
         {
           "current_key": "AIzaSyBO2YhY8o2i-uJeUsmvbZkp0acGAoA9XHA"
         }
       ],
-      "services": {
+      "Сервисы": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
+          "другая_платформа_oauth_client": [
             {
               "client_id": "7681647111-1kgobovjj8ahf5g1vqq029gs7d52n111.apps.googleusercontent.com",
-              "client_type": 3
+              "тип_клиента": 3
             }
           ]
         }
       }
     }
   ],
-  "configuration_version": "1"
+  "версия_конфигурации": "1"
 }

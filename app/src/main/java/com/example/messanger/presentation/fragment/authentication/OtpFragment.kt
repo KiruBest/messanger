@@ -74,6 +74,7 @@ class OtpFragment : Fragment() {
                 }
             }
         }
+
     }
 
 }

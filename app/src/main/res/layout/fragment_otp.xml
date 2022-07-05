@@ -100,14 +100,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogOTP" />
 
-    <Button
-        android:id="@+id/buttonOTPResend"
-        style="@style/Widget.Material3.Button.OutlinedButton.ResendButton"
+    <TextView
+        android:id="@+id/textViewTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="55dp"
-        android:text="@string/resend_bt_fragment_otp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="72dp"
+        android:fontFamily="@font/roboto_condensed_italic"
+        android:letterSpacing="0.05"
+        android:textColor="@color/white"
+        android:textSize="17dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLogOTP" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogOTP"
+        tools:text="60" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
