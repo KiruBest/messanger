@@ -1,13 +1,18 @@
 package com.example.messanger.presentation.fragment.chat
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.AbsListView
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.messanger.R
 import com.example.messanger.databinding.FragmentChatBinding
@@ -40,7 +45,7 @@ class ChatFragment : BaseFragment() {
 
         val toolbar = binding.toolbar
 
-        toolbar.setNavigationOnClickListener {
+        toolbar.findViewById<ImageButton>(R.id.navIcon).setOnClickListener {
             findNavController().popBackStack(R.id.chatFragment, true)
         }
 
@@ -58,9 +63,22 @@ class ChatFragment : BaseFragment() {
             layoutManager = linearLayoutManager
         }
 
-        recyclerView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
-            recyclerView.scrollToPosition(singleChatAdapter.itemCount - 1)
+        recyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
+            if (linearLayoutManager.findLastVisibleItemPosition() != singleChatAdapter.itemCount - 1) {
+                recyclerView.smoothScrollBy(0, oldBottom - bottom)
+            }
         }
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy < 0) {
+                    val v = requireActivity().currentFocus
+                    val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v?.windowToken, 0)
+                }
+            }
+        })
 
         toolbar.findViewById<TextView>(R.id.companionName).text =
             CompanionTitleBuilder(companion, requireContext()).getTitle()
@@ -77,7 +95,7 @@ class ChatFragment : BaseFragment() {
             val message = binding.editTextSendMessage.text.toString()
             viewModel.sendMessage(message, companion.id)
             binding.editTextSendMessage.text.clear()
-            linearLayoutManager.scrollToPosition(singleChatAdapter.itemCount - 1)
+            recyclerView.scrollToPosition(singleChatAdapter.itemCount - 1)
         }
 
         lifecycleScope.launchWhenCreated {
@@ -88,7 +106,7 @@ class ChatFragment : BaseFragment() {
                     is AsyncOperationResult.Loading -> {}
                     is AsyncOperationResult.Success -> {
                         singleChatAdapter.updateMessageList(result.data)
-                        linearLayoutManager.scrollToPosition(singleChatAdapter.itemCount - 1)
+                        recyclerView.scrollToPosition(singleChatAdapter.itemCount - 1)
                     }
                 }
             }

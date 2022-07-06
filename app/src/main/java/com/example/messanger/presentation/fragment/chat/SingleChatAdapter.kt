@@ -2,6 +2,7 @@ package com.example.messanger.presentation.fragment.chat
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.messanger.databinding.SingleChatMessageLayoutBinding
 import com.example.messanger.domain.model.MessageDto
@@ -23,7 +24,9 @@ class SingleChatAdapter(
     override fun getItemCount(): Int = messageList.size
 
     fun updateMessageList(newMessageList: List<MessageDto>) {
+        val diffUtilCallback = SingleChatDiffUtil(messageList, newMessageList)
+        val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
         messageList = newMessageList
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 }

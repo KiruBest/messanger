@@ -8,11 +8,13 @@ import com.example.messanger.data.core.Constants.MESSAGE_TIMESTAMP
 import com.example.messanger.data.core.Constants.MESSAGE_TYPE
 import com.example.messanger.data.core.Constants.USERS_REF
 import com.example.messanger.data.core.Constants.USER_ID
+import com.example.messanger.data.core.mapToChatItemDto
 import com.example.messanger.data.core.mapToMessageDto
 import com.example.messanger.data.core.mapToUserDto
 import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.domain.core.DatabaseReadDataException
 import com.example.messanger.domain.core.UserUnAuthException
+import com.example.messanger.domain.model.ChatItemDto
 import com.example.messanger.domain.model.MessageDto
 import com.example.messanger.domain.model.UserDto
 import com.example.messanger.domain.repository.IMessengerService
@@ -25,6 +27,7 @@ import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -98,8 +101,9 @@ class MessengerService(
         }
     }
 
-    override suspend fun getMessages(companionID: String): Flow<AsyncOperationResult<List<MessageDto>>> =
-        callbackFlow {
+    override suspend fun getMessagesByCompanionId(companionID: String): Flow<AsyncOperationResult<List<MessageDto>>> =
+        withContext(Dispatchers.IO) {
+            callbackFlow {
                 firebaseAuth.currentUser?.uid?.let { uid ->
                     val ref = firebaseRef.child(MESSAGE_REF)
                         .child(uid)
@@ -108,7 +112,7 @@ class MessengerService(
                     val callback = object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val messagesList = snapshot.children.map { it.mapToMessageDto() }
-                            trySendBlocking(AsyncOperationResult.Success(messagesList))
+                            if (isActive) trySendBlocking(AsyncOperationResult.Success(messagesList))
                         }
 
                         override fun onCancelled(error: DatabaseError) {
@@ -122,7 +126,14 @@ class MessengerService(
                         ref.removeEventListener(callback)
                     }
                 }
+            }
         }
+
+    override suspend fun getExistsChats(): Flow<AsyncOperationResult<List<ChatItemDto>>> = withContext(Dispatchers.IO) {
+        callbackFlow {
+
+        }
+    }
 
     override fun searchUser(newText: String?): List<UserDto> {
         return if (newText != null) {

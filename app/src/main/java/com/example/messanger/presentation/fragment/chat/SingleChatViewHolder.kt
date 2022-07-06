@@ -23,10 +23,12 @@ class SingleChatViewHolder(binding: SingleChatMessageLayoutBinding) :
             textViewMessage.text = messageDto.text
             time.text = messageDto.timestamp.asDatHourMinute()
             constraintLayoutCompanion.visibility = View.VISIBLE
+            constraintLayoutCurrentUser.visibility = View.GONE
         } else {
             textViewMessageFromCurrentUser.text = messageDto.text
             timeCurrentUser.text = messageDto.timestamp.asDatHourMinute()
             constraintLayoutCurrentUser.visibility = View.VISIBLE
+            constraintLayoutCompanion.visibility = View.GONE
         }
     }
 }
