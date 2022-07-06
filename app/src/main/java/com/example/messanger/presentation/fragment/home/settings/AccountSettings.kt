@@ -54,11 +54,9 @@ class AccountSettings : BaseFragment() {
         }
     }
 
-    private fun updateLable(cal: Calendar?) {
+    private fun updateLable(cal: Calendar) {
         val myFormat = "dd.MM.yyyy"
         val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
-        if (cal != null) {
             binding.editTextDate.setText(sdf.format(cal.time))
-        }
     }
 }
