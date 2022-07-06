@@ -4,12 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.domain.core.UserState
+import com.example.messanger.domain.model.ChatItemDto
 import com.example.messanger.domain.model.UserDto
 import com.example.messanger.domain.repository.IAccountService
 import com.example.messanger.domain.repository.IMessengerService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -26,6 +28,9 @@ class HomeViewModel(
 
     private val _usersListFlow = MutableStateFlow<AsyncOperationResult<List<UserDto>>>(AsyncOperationResult.Loading())
     val usersListFlow: StateFlow<AsyncOperationResult<List<UserDto>>> = _usersListFlow.asStateFlow()
+
+    private val _chatListFlow = MutableStateFlow<AsyncOperationResult<List<ChatItemDto>>>(AsyncOperationResult.Loading())
+    val chatListFlow: StateFlow<AsyncOperationResult<List<ChatItemDto>>> = _chatListFlow.asStateFlow()
 
     fun getCurrentUser() {
         viewModelScope.launch {
@@ -58,6 +63,20 @@ class HomeViewModel(
             val result = messengerService.getUsersList()
             _usersListFlow.value = result
             _usersListFlow.value = AsyncOperationResult.EmptyState()
+        }
+    }
+
+    fun getChats() {
+        if (_chatListFlow.value !is AsyncOperationResult.Loading) {
+            _chatListFlow.value = AsyncOperationResult.Loading()
+        }
+
+        viewModelScope.launch {
+            val result = messengerService.getExistsChats()
+            result.collect {
+                _chatListFlow.value = it
+            }
+            _chatListFlow.value = AsyncOperationResult.EmptyState()
         }
     }
 

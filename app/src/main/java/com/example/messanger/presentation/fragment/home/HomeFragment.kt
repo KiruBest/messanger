@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -19,6 +21,7 @@ import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.domain.core.UserState
 import com.example.messanger.domain.model.UserDto
 import com.example.messanger.presentation.core.BaseFragment
+import com.example.messanger.presentation.core.Constants
 import com.example.messanger.presentation.fragment.authentication.LoginViewModel
 import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,6 +29,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomeFragment : BaseFragment() {
 
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var _adapter: HomeChatAdapter
+
     private val viewModel: HomeViewModel by viewModel()
 
     override fun onCreateView(
@@ -40,6 +45,19 @@ class HomeFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val toolbar = binding.toolbar
+
+        _adapter = HomeChatAdapter(emptyList()) { chatItemDto ->
+            val userDto = chatItemDto.mapToUserDto()
+            val bundle = bundleOf(Constants.USER_DTO to userDto)
+            findNavController().navigate(R.id.action_addCompanionFragment_to_chatFragment, bundle)
+        }
+
+        val linerLayoutManager = LinearLayoutManager(requireContext())
+
+        binding.recyclerView.apply {
+            adapter = _adapter
+            layoutManager = linerLayoutManager
+        }
 
         binding.buttonNewChat.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addCompanionFragment)
@@ -100,6 +118,19 @@ class HomeFragment : BaseFragment() {
                     is AsyncOperationResult.EmptyState -> TODO()
                     is AsyncOperationResult.Failure -> TODO()
                     is AsyncOperationResult.Loading -> binding.progressBar.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.chatListFlow.collect { result ->
+                when(result) {
+                    is AsyncOperationResult.EmptyState -> {}
+                    is AsyncOperationResult.Failure -> {}
+                    is AsyncOperationResult.Loading -> {}
+                    is AsyncOperationResult.Success -> {
+                        _adapter.update(result.data)
+                    }
                 }
             }
         }

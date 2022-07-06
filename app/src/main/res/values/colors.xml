@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="aqua_color">#33BEE7</color>
+    <color name="cream_companion_chat">#F7F7F7</color>
+    <color name="blue_chat">#2F80ED</color>
 </resources>

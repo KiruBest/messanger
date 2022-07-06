@@ -29,7 +29,7 @@ class ChatViewModel(
 
     fun getMessages(companionID: String) {
         viewModelScope.launch {
-            val result = messengerService.getMessages(companionID)
+            val result = messengerService.getMessagesByCompanionId(companionID)
             result.collect {
                 _messageListFlow.value = it
             }
