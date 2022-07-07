@@ -1,11 +1,11 @@
 package com.example.messanger.domain.model
 
 data class ChatItemDto(
-    val messageID: String,
+    var messageID: String,
     var text: String,
     var type: String,
-    val from: String,
-    val timestamp: Long,
+    var from: String,
+    var timestamp: Long,
     val userID: String,
     var username: String,
     var fName: String,
@@ -14,7 +14,5 @@ data class ChatItemDto(
     var avatarUrl: String,
     var phone: String
 ) {
-    fun mapToUserDto(): UserDto {
-        return UserDto(userID, username, fName, lName, status, avatarUrl, phone)
-    }
+    fun mapToUserDto() = UserDto(userID, username, fName, lName, status, avatarUrl, phone)
 }

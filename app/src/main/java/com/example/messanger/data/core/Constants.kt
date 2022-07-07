@@ -15,6 +15,9 @@ object Constants {
     const val MESSAGE_FROM = "from"
     const val MESSAGE_TIMESTAMP = "timestamp"
 
+    const val CHAT_TYPE = "chatType"
+
     const val USERS_REF = "Users"
     const val MESSAGE_REF = "Messages"
+    const val MAIN_LIST_REF = "MainList"
 }

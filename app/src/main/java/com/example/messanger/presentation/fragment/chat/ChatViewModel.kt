@@ -25,6 +25,12 @@ class ChatViewModel(
                 _messageListFlow.value = AsyncOperationResult.EmptyState()
             }
         }
+
+        viewModelScope.launch {
+            messageListFlow.collect {
+                if (it is AsyncOperationResult.Success) messengerService.addChat(companionID, "chat")
+            }
+        }
     }
 
     fun getMessages(companionID: String) {

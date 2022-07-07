@@ -24,6 +24,7 @@ import com.example.messanger.presentation.core.BaseFragment
 import com.example.messanger.presentation.core.Constants
 import com.example.messanger.presentation.fragment.authentication.LoginViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : BaseFragment() {
@@ -49,7 +50,7 @@ class HomeFragment : BaseFragment() {
         _adapter = HomeChatAdapter(emptyList()) { chatItemDto ->
             val userDto = chatItemDto.mapToUserDto()
             val bundle = bundleOf(Constants.USER_DTO to userDto)
-            findNavController().navigate(R.id.action_addCompanionFragment_to_chatFragment, bundle)
+            findNavController().navigate(R.id.action_homeFragment_to_chatFragment, bundle)
         }
 
         val linerLayoutManager = LinearLayoutManager(requireContext())
@@ -79,6 +80,8 @@ class HomeFragment : BaseFragment() {
             viewModel.userDtoFlow.collect { value ->
                 when(value) {
                     is AsyncOperationResult.Success -> {
+                        viewModel.getChats()
+
                         toolbar.menu.clear()
                         toolbar.inflateMenu(R.menu.account_menu)
 

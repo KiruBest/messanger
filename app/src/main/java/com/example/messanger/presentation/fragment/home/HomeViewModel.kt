@@ -1,5 +1,6 @@
 package com.example.messanger.presentation.fragment.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messanger.domain.core.AsyncOperationResult
@@ -8,10 +9,7 @@ import com.example.messanger.domain.model.ChatItemDto
 import com.example.messanger.domain.model.UserDto
 import com.example.messanger.domain.repository.IAccountService
 import com.example.messanger.domain.repository.IMessengerService
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -67,15 +65,17 @@ class HomeViewModel(
     }
 
     fun getChats() {
-        if (_chatListFlow.value !is AsyncOperationResult.Loading) {
-            _chatListFlow.value = AsyncOperationResult.Loading()
-        }
-
         viewModelScope.launch {
+            if (_chatListFlow.value !is AsyncOperationResult.Loading) {
+                _chatListFlow.value = AsyncOperationResult.Loading()
+            }
+
             val result = messengerService.getExistsChats()
+
             result.collect {
                 _chatListFlow.value = it
             }
+
             _chatListFlow.value = AsyncOperationResult.EmptyState()
         }
     }
