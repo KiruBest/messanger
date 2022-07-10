@@ -1,6 +1,8 @@
 package com.example.messanger.presentation.fragment.home
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messanger.domain.core.AsyncOperationResult
@@ -11,6 +13,7 @@ import com.example.messanger.domain.repository.IAccountService
 import com.example.messanger.domain.repository.IMessengerService
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class HomeViewModel(
     private val accountService: IAccountService,
@@ -29,6 +32,9 @@ class HomeViewModel(
 
     private val _chatListFlow = MutableStateFlow<AsyncOperationResult<List<ChatItemDto>>>(AsyncOperationResult.Loading())
     val chatListFlow: StateFlow<AsyncOperationResult<List<ChatItemDto>>> = _chatListFlow.asStateFlow()
+
+    private val _liveData = MutableLiveData<AsyncOperationResult<List<ChatItemDto>>>()
+    val liveData: LiveData<AsyncOperationResult<List<ChatItemDto>>> get() = _liveData
 
     fun getCurrentUser() {
         viewModelScope.launch {
@@ -73,7 +79,7 @@ class HomeViewModel(
             val result = messengerService.getExistsChats()
 
             result.collect {
-                _chatListFlow.value = it
+                _liveData.value = it
             }
 
             _chatListFlow.value = AsyncOperationResult.EmptyState()

@@ -153,6 +153,17 @@ class HomeFragment : BaseFragment() {
             }
         }
 
+        viewModel.liveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is AsyncOperationResult.EmptyState -> {}
+                is AsyncOperationResult.Failure -> {}
+                is AsyncOperationResult.Loading -> {}
+                is AsyncOperationResult.Success -> {
+                    _adapter.update(it.data)
+                }
+            }
+        }
+
         viewModel.getCurrentUser()
     }
 }

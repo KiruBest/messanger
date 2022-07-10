@@ -30,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -43,7 +44,7 @@ class MessengerService(
     private val firebaseRef: DatabaseReference
 ) : IMessengerService {
     private val usersList: MutableList<UserDto> = mutableListOf()
-    private val chatItemList = mutableListOf<ChatItemDto>()
+    private var chatItemList = mutableListOf<ChatItemDto>()
 
     override suspend fun getUsersList(): AsyncOperationResult<List<UserDto>> =
         withContext(Dispatchers.IO) {
@@ -140,13 +141,74 @@ class MessengerService(
         withContext(Dispatchers.IO) {
             callbackFlow {
                 var chatList: List<ChatDto>
-                var chatItemDto: ChatItemDto
-                var message: ChatItemDto
 
                 firebaseAuth.currentUser?.uid?.let { uid ->
                     if (chatItemList.isNotEmpty()) trySendBlocking(AsyncOperationResult.Success(chatItemList))
 
-                    val refMainList = firebaseRef.child(MAIN_LIST_REF).child(uid)
+                    val callbackLastMessage = object :
+                        ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            try {
+                                val message = snapshot.children.map { it.mapToChatItemDto() }[0]
+                                val chatItemDto = chatItemList.find { it.userID == snapshot.key }
+
+                                chatItemDto?.text = message.text
+                                chatItemDto?.messageID = message.messageID
+                                chatItemDto?.from = message.from
+                                chatItemDto?.type = message.type
+                                chatItemDto?.timestamp = message.timestamp
+
+                                trySendBlocking(
+                                    AsyncOperationResult.Success(
+                                        ArrayList(chatItemList).toList()
+                                    )
+                                )
+                            } catch (e: Exception) {
+                                trySendBlocking(
+                                    AsyncOperationResult.Failure(e)
+                                )
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            trySendBlocking(AsyncOperationResult.Failure(DatabaseReadDataException()))
+                        }
+                    }
+
+                    val callbackCompanion = object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val chatItemDto = snapshot.mapToChatItemDto()
+
+                            if (!chatItemList.any { it.userID == chatItemDto.userID }) {
+                                chatItemList.add(chatItemDto)
+                            } else {
+                                val item = chatItemList.find { it.userID == chatItemDto.userID }
+
+                                item?.status = chatItemDto.status
+                                item?.username = chatItemDto.username
+                                item?.fName = chatItemDto.fName
+                                item?.lName = chatItemDto.lName
+                                item?.avatarUrl = chatItemDto.avatarUrl
+                                item?.phone = chatItemDto.phone
+                            }
+
+                            trySendBlocking(
+                                AsyncOperationResult.Success(
+                                    ArrayList(chatItemList).toList()
+                                )
+                            )
+
+                            val refLastMessage =
+                                firebaseRef.child(MESSAGE_REF).child(uid)
+                                    .child(chatItemDto.userID).limitToLast(1)
+
+                            refLastMessage.addValueEventListener(callbackLastMessage)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            trySendBlocking(AsyncOperationResult.Failure(DatabaseReadDataException()))
+                        }
+                    }
 
                     val callbackChatList = object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
@@ -154,76 +216,24 @@ class MessengerService(
 
                             chatList.forEach { chat ->
                                 val refCompanion = firebaseRef.child(USERS_REF).child(chat.id)
-
-                                val callbackCompanion = object : ValueEventListener {
-                                    override fun onDataChange(snapshot: DataSnapshot) {
-                                        chatItemDto = snapshot.mapToChatItemDto()
-
-                                        val refLastMessage =
-                                            firebaseRef.child(MESSAGE_REF).child(uid)
-                                                .child(chatItemDto.userID).limitToLast(1)
-
-                                        val callbackLastMessage = object :
-                                            ValueEventListener {
-                                            override fun onDataChange(snapshot: DataSnapshot) {
-                                                try {
-                                                    message = snapshot.children.map { it.mapToChatItemDto() }[0]
-
-                                                    chatItemDto.text = message.text
-                                                    chatItemDto.messageID = message.messageID
-                                                    chatItemDto.from = message.from
-                                                    chatItemDto.type = message.type
-                                                    chatItemDto.timestamp = message.timestamp
-
-                                                    if (!chatItemList.any { it.userID == chatItemDto.userID }) {
-                                                        chatItemList.add(chatItemDto)
-                                                        trySendBlocking(
-                                                            AsyncOperationResult.Success(
-                                                                chatItemList
-                                                            )
-                                                        )
-                                                    } else {
-                                                        trySendBlocking(
-                                                            AsyncOperationResult.Success(
-                                                                chatItemList
-                                                            )
-                                                        )
-                                                    }
-                                                } catch (e: Exception) {
-                                                    trySendBlocking(
-                                                        AsyncOperationResult.Failure(e)
-                                                    )
-                                                }
-                                            }
-
-                                            override fun onCancelled(error: DatabaseError) {
-                                                TODO("Not yet implemented")
-                                            }
-                                        }
-
-                                        refLastMessage.addValueEventListener(callbackLastMessage)
-                                    }
-
-                                    override fun onCancelled(error: DatabaseError) {
-                                        TODO("Not yet implemented")
-                                    }
-                                }
-
                                 refCompanion.addValueEventListener(callbackCompanion)
                             }
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
+                            trySendBlocking(AsyncOperationResult.Failure(DatabaseReadDataException()))
                         }
                     }
+
+                    val refMainList = firebaseRef.child(MAIN_LIST_REF).child(uid)
 
                     refMainList.addValueEventListener(callbackChatList)
 
                     awaitClose {
                         refMainList.removeEventListener(callbackChatList)
                     }
-                }
+
+                } ?: trySendBlocking(AsyncOperationResult.Failure(UserUnAuthException()))
             }
         }
 

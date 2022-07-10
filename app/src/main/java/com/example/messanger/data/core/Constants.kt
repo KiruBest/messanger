@@ -20,4 +20,5 @@ object Constants {
     const val USERS_REF = "Users"
     const val MESSAGE_REF = "Messages"
     const val MAIN_LIST_REF = "MainList"
+    const val AVATARS = "avatars"
 }
