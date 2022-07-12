@@ -1,8 +1,6 @@
 package com.example.messanger.data.repository
 
-import android.graphics.Bitmap
 import android.util.Log
-import com.example.messanger.data.core.Constants.AVATARS
 import com.example.messanger.data.core.Constants.USERS_REF
 import com.example.messanger.data.core.Constants.USER_ID
 import com.example.messanger.data.core.Constants.USER_PHONE
@@ -20,18 +18,15 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class AccountService(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseReference: DatabaseReference,
-    private val storageReference: StorageReference
+    private val firebaseReference: DatabaseReference
 ) : IAccountService {
     private var storedVerificationId: String? = null
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
@@ -122,11 +117,7 @@ class AccountService(
                             firebaseAuth.signOut()
                             continuation.resume(AsyncOperationResult.Success(firebaseAuth.currentUser == null))
                         } else {
-                            continuation.resume(
-                                AsyncOperationResult.Failure(
-                                    DatabaseReadDataException()
-                                )
-                            )
+                            continuation.resume(AsyncOperationResult.Failure(DatabaseReadDataException()))
                         }
                     }
             }
@@ -156,39 +147,10 @@ class AccountService(
             }
         }
 
-    override suspend fun updateUserParams(
-        userDto: UserDto,
-        bitmap: Bitmap?
-    ): AsyncOperationResult<Boolean> =
+    override suspend fun updateUserParams(userDto: UserDto): AsyncOperationResult<Boolean> =
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 firebaseAuth.currentUser?.uid?.let { userId ->
-                    bitmap?.let { avatar ->
-                        val ref = storageReference.child("$AVATARS/${userDto.id}.jpg")
-                        val baos = ByteArrayOutputStream()
-                        avatar.compress(Bitmap.CompressFormat.JPEG, 60, baos)
-                        val data = baos.toByteArray()
-
-                        val uploadTask = ref.putBytes(data)
-
-                        uploadTask.continueWithTask { task ->
-                            if (!task.isSuccessful) {
-                                task.exception?.let {
-                                    continuation.resume(AsyncOperationResult.Failure(it))
-                                }
-                            }
-                            ref.downloadUrl
-                        }.addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                userDto.avatarUrl = task.result.toString()
-                                firebaseReference.child(USERS_REF).child(userId).setValue(userDto)
-                            } else {
-                                task.exception?.let {
-                                    continuation.resume(AsyncOperationResult.Failure(it))
-                                }
-                            }
-                        }
-                    }
                     firebaseReference.child(USERS_REF).child(userId).setValue(userDto)
                 } ?: continuation.resume(AsyncOperationResult.Failure(UserUnAuthException()))
             }
