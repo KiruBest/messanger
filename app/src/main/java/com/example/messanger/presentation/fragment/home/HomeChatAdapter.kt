@@ -38,6 +38,7 @@ class HomeChatAdapter(
         val diffCallback = HomeDiffUtilCallback(chatList, newChatList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         chatList = newChatList
+        notifyDataSetChanged()
         diffResult.dispatchUpdatesTo(this)
     }
 }

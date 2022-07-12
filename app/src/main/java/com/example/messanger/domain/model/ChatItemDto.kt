@@ -12,7 +12,9 @@ data class ChatItemDto(
     var lName: String,
     var status: String,
     var avatarUrl: String,
-    var phone: String
+    var phone: String,
+    var seen: Boolean,
+    var noSeenMessageCount: Int
 ) {
     fun mapToUserDto() = UserDto(userID, username, fName, lName, status, avatarUrl, phone)
 }

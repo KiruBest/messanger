@@ -14,6 +14,8 @@ object Constants {
     const val MESSAGE_TYPE = "type"
     const val MESSAGE_FROM = "from"
     const val MESSAGE_TIMESTAMP = "timestamp"
+    const val MESSAGE_SEEN = "seen"
+    const val MESSAGE_NO_SEEN_COUNT = "noSeenMessageCount"
 
     const val CHAT_TYPE = "chatType"
 

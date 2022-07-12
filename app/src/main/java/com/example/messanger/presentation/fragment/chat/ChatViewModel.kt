@@ -42,4 +42,10 @@ class ChatViewModel(
             _messageListFlow.value = AsyncOperationResult.EmptyState()
         }
     }
+
+    fun readMessage(companionID: String, messageId: String) {
+        viewModelScope.launch {
+            messengerService.readMessage(companionID, messageId)
+        }
+    }
 }

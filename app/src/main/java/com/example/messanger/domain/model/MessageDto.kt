@@ -5,5 +5,6 @@ data class MessageDto(
     var text: String,
     var type: String,
     val from: String,
-    val timestamp: Long
+    val timestamp: Long,
+    var seen: Boolean
 )

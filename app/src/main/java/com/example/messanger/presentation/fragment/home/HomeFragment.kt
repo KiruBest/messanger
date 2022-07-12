@@ -130,15 +130,13 @@ class HomeFragment : BaseFragment() {
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.chatListFlow.collect { result ->
-                when(result) {
-                    is AsyncOperationResult.EmptyState -> {}
-                    is AsyncOperationResult.Failure -> {}
-                    is AsyncOperationResult.Loading -> {}
-                    is AsyncOperationResult.Success -> {
-                        _adapter.update(result.data)
-                    }
+        viewModel.chatListFlow.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is AsyncOperationResult.EmptyState -> {}
+                is AsyncOperationResult.Failure -> {}
+                is AsyncOperationResult.Loading -> {}
+                is AsyncOperationResult.Success -> {
+                    _adapter.update(result.data)
                 }
             }
         }

@@ -12,5 +12,6 @@ interface IMessengerService {
     suspend fun getMessagesByCompanionId(companionID: String): Flow<AsyncOperationResult<List<MessageDto>>>
     suspend fun getExistsChats(): Flow<AsyncOperationResult<List<ChatItemDto>>>
     suspend fun addChat(companionID: String, chatType: String): AsyncOperationResult<Boolean>
+    suspend fun readMessage(companionID: String, messageID: String)
     fun searchUser(newText: String?): List<UserDto>
 }

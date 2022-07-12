@@ -9,6 +9,7 @@ import com.example.messanger.databinding.ChatLayoutItemBinding
 import com.example.messanger.domain.core.UserState
 import com.example.messanger.domain.model.ChatItemDto
 import com.example.messanger.presentation.core.CompanionTitleBuilderFromChatItemDto
+import com.example.messanger.presentation.core.LastMessageBuilder
 import com.example.messanger.presentation.core.asDatHourMinute
 
 class HomeChatViewHolder(binding: ChatLayoutItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -21,10 +22,18 @@ class HomeChatViewHolder(binding: ChatLayoutItemBinding) : RecyclerView.ViewHold
     private val context = binding.root.context
 
     fun bind(chatItemDto: ChatItemDto) {
-        lastMessage.text = chatItemDto.text
+        lastMessage.text = LastMessageBuilder(chatItemDto).getLastMessageSingleChat()
+
         userName.text = CompanionTitleBuilderFromChatItemDto(chatItemDto, context).getTitle()
         time.text = chatItemDto.timestamp.asDatHourMinute()
         status.background = ContextCompat.getDrawable(context, R.color.aqua_color)
+
+        if (chatItemDto.noSeenMessageCount != 0 && chatItemDto.userID == chatItemDto.from) {
+            noReadMessageCount.text = chatItemDto.noSeenMessageCount.toString()
+            noReadMessageCount.visibility = View.VISIBLE
+        } else {
+            noReadMessageCount.visibility = View.GONE
+        }
 
         when (chatItemDto.status) {
             UserState.ONLINE.state -> status.visibility = View.VISIBLE
