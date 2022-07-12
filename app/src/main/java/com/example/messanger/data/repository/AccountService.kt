@@ -1,5 +1,6 @@
 package com.example.messanger.data.repository
 
+import android.graphics.Bitmap
 import android.util.Log
 import com.example.messanger.data.core.Constants.USERS_REF
 import com.example.messanger.data.core.Constants.USER_ID
@@ -18,15 +19,19 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class AccountService(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseReference: DatabaseReference
+    private val firebaseReference: DatabaseReference,
+    private val storageReference: StorageReference
 ) : IAccountService {
     private var storedVerificationId: String? = null
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
@@ -147,10 +152,37 @@ class AccountService(
             }
         }
 
-    override suspend fun updateUserParams(userDto: UserDto): AsyncOperationResult<Boolean> =
+    override suspend fun updateUserParams(userDto: UserDto, bitmap: Bitmap?): AsyncOperationResult<Boolean> =
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 firebaseAuth.currentUser?.uid?.let { userId ->
+                    bitmap?.let { bmp ->
+                        val ref = storageReference.child("avatars/${userDto.id}.jpg")
+
+                        val baos = ByteArrayOutputStream()
+                        bmp.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                        val data = baos.toByteArray()
+
+                        val uploadTask = ref.putBytes(data)
+
+                        uploadTask.continueWithTask { task ->
+                            if (!task.isSuccessful) {
+                                task.exception?.let {
+                                    continuation.resume(AsyncOperationResult.Failure(it))
+                                }
+                            }
+                            ref.downloadUrl
+                        }.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val downloadUri = task.result
+                                userDto.avatarUrl = downloadUri.toString()
+                                firebaseReference.child(USERS_REF).child(userId).setValue(userDto)
+                            } else {
+                                continuation.resume(AsyncOperationResult.Failure(task.exception!!))
+                            }
+                        }
+
+                    }
                     firebaseReference.child(USERS_REF).child(userId).setValue(userDto)
                 } ?: continuation.resume(AsyncOperationResult.Failure(UserUnAuthException()))
             }

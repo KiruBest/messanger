@@ -60,10 +60,6 @@ class HomeFragment : BaseFragment() {
             layoutManager = linerLayoutManager
         }
 
-        binding.buttonNewChat.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_addCompanionFragment)
-        }
-
         binding.chipChats.setOnClickListener {
             binding.chipChats.isChecked = true
             binding.chipCalls.isChecked = false
@@ -116,11 +112,20 @@ class HomeFragment : BaseFragment() {
                                 }
                             })
 
+                        binding.buttonNewChat.visibility = View.VISIBLE
+
+                        binding.buttonNewChat.setOnClickListener {
+                            findNavController().navigate(R.id.action_homeFragment_to_addCompanionFragment)
+                        }
+
                         binding.progressBar.visibility = View.GONE
                     }
                     is AsyncOperationResult.EmptyState -> TODO()
                     is AsyncOperationResult.Failure -> TODO()
-                    is AsyncOperationResult.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is AsyncOperationResult.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.buttonNewChat.visibility = View.GONE
+                    }
                 }
             }
         }
