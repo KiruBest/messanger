@@ -3,12 +3,11 @@ package com.example.messanger.presentation.fragment.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.messanger.databinding.ChatLayoutItemBinding
 import com.example.messanger.domain.model.ChatItemDto
-import com.example.messanger.domain.model.MessageDto
-import com.example.messanger.domain.model.UserDto
-import com.example.messanger.presentation.fragment.home.settings.HomeChatViewHolder
+import com.example.messanger.presentation.fragment.HomeDiffUtilCallback
 
 class HomeChatAdapter(
     private var chatList: List<ChatItemDto>,
@@ -36,7 +35,10 @@ class HomeChatAdapter(
     }
 
     fun update(newChatList: List<ChatItemDto>) {
+        val diffCallback = HomeDiffUtilCallback(chatList, newChatList)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         chatList = newChatList
         notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 }

@@ -24,6 +24,7 @@ import com.example.messanger.presentation.core.BaseFragment
 import com.example.messanger.presentation.core.Constants
 import com.example.messanger.presentation.fragment.authentication.LoginViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : BaseFragment() {
@@ -49,7 +50,7 @@ class HomeFragment : BaseFragment() {
         _adapter = HomeChatAdapter(emptyList()) { chatItemDto ->
             val userDto = chatItemDto.mapToUserDto()
             val bundle = bundleOf(Constants.USER_DTO to userDto)
-            findNavController().navigate(R.id.action_addCompanionFragment_to_chatFragment, bundle)
+            findNavController().navigate(R.id.action_homeFragment_to_chatFragment, bundle)
         }
 
         val linerLayoutManager = LinearLayoutManager(requireContext())
@@ -57,10 +58,6 @@ class HomeFragment : BaseFragment() {
         binding.recyclerView.apply {
             adapter = _adapter
             layoutManager = linerLayoutManager
-        }
-
-        binding.buttonNewChat.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_addCompanionFragment)
         }
 
         binding.chipChats.setOnClickListener {
@@ -79,6 +76,8 @@ class HomeFragment : BaseFragment() {
             viewModel.userDtoFlow.collect { value ->
                 when(value) {
                     is AsyncOperationResult.Success -> {
+                        viewModel.getChats()
+
                         toolbar.menu.clear()
                         toolbar.inflateMenu(R.menu.account_menu)
 
@@ -113,24 +112,31 @@ class HomeFragment : BaseFragment() {
                                 }
                             })
 
+                        binding.buttonNewChat.visibility = View.VISIBLE
+
+                        binding.buttonNewChat.setOnClickListener {
+                            findNavController().navigate(R.id.action_homeFragment_to_addCompanionFragment)
+                        }
+
                         binding.progressBar.visibility = View.GONE
                     }
                     is AsyncOperationResult.EmptyState -> TODO()
                     is AsyncOperationResult.Failure -> TODO()
-                    is AsyncOperationResult.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is AsyncOperationResult.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.buttonNewChat.visibility = View.GONE
+                    }
                 }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.chatListFlow.collect { result ->
-                when(result) {
-                    is AsyncOperationResult.EmptyState -> {}
-                    is AsyncOperationResult.Failure -> {}
-                    is AsyncOperationResult.Loading -> {}
-                    is AsyncOperationResult.Success -> {
-                        _adapter.update(result.data)
-                    }
+        viewModel.chatListFlow.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is AsyncOperationResult.EmptyState -> {}
+                is AsyncOperationResult.Failure -> {}
+                is AsyncOperationResult.Loading -> {}
+                is AsyncOperationResult.Success -> {
+                    _adapter.update(result.data)
                 }
             }
         }

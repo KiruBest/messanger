@@ -105,8 +105,12 @@ class ChatFragment : BaseFragment() {
                     is AsyncOperationResult.Failure -> TODO()
                     is AsyncOperationResult.Loading -> {}
                     is AsyncOperationResult.Success -> {
-                        singleChatAdapter.updateMessageList(result.data)
+                        val messages = result.data
+                        singleChatAdapter.updateMessageList(messages)
                         recyclerView.scrollToPosition(singleChatAdapter.itemCount - 1)
+                        messages.forEach {
+                            if (!it.seen) viewModel.readMessage(companion.id, it.id)
+                        }
                     }
                 }
             }
