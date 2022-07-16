@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.domain.model.MessageDto
+import com.example.messanger.domain.model.UserDto
 import com.example.messanger.domain.repository.IMessengerService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,9 @@ class ChatViewModel(
 ): ViewModel() {
     private val _messageListFlow: MutableStateFlow<AsyncOperationResult<List<MessageDto>>> = MutableStateFlow(AsyncOperationResult.Loading())
     val messageListFlow: StateFlow<AsyncOperationResult<List<MessageDto>>> = _messageListFlow.asStateFlow()
+
+    private val _companionFlow: MutableStateFlow<AsyncOperationResult<UserDto>> = MutableStateFlow(AsyncOperationResult.Loading())
+    val companionFlow: StateFlow<AsyncOperationResult<UserDto>> = _companionFlow.asStateFlow()
 
     fun sendMessage(text: String, companionID: String) {
         viewModelScope.launch {
@@ -46,6 +50,13 @@ class ChatViewModel(
     fun readMessage(companionID: String, messageId: String) {
         viewModelScope.launch {
             messengerService.readMessage(companionID, messageId)
+        }
+    }
+
+    fun getCompanionById(companionID: String) {
+        viewModelScope.launch {
+            val result = messengerService.getCompanionById(companionID)
+            _companionFlow.tryEmit(result)
         }
     }
 }

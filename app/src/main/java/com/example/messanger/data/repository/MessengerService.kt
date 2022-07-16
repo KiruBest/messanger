@@ -1,5 +1,6 @@
 package com.example.messanger.data.repository
 
+import android.util.Log
 import com.example.messanger.data.core.Constants.CHAT_TYPE
 import com.example.messanger.data.core.Constants.MAIN_LIST_REF
 import com.example.messanger.data.core.Constants.MESSAGE_FROM
@@ -268,6 +269,22 @@ class MessengerService(
                 firebaseRef.child(MESSAGE_REF).child(userID).child(companionID).child(messageID)
                     .updateChildren(mapOf(MESSAGE_SEEN to true))
             }
+        }
+    }
+
+    override suspend fun getCompanionById(companionID: String): AsyncOperationResult<UserDto> = withContext(Dispatchers.IO) {
+        suspendCoroutine { continuation ->
+            firebaseRef.child(USERS_REF).child(companionID).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.mapToUserDto()
+
+                    continuation.resume(AsyncOperationResult.Success(user))
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    continuation.resume(AsyncOperationResult.Failure(DatabaseReadDataException()))
+                }
+            })
         }
     }
 
