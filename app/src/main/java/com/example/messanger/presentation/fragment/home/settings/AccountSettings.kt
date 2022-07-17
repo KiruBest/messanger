@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.example.messanger.R
 import com.example.messanger.databinding.FragmentAccountSettingsBinding
+import com.example.messanger.domain.model.UserDto
 import com.example.messanger.presentation.core.BaseFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -20,8 +21,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class AccountSettings : BaseFragment() {
 
     private lateinit var binding: FragmentAccountSettingsBinding
-    private val viewModel: AccountSettingsViewModel by viewModel()
     private lateinit var pictureActivityResult: ActivityResultLauncher<Intent>
+
+    private val viewModel: AccountSettingsViewModel by viewModel()
+    private var user: UserDto? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

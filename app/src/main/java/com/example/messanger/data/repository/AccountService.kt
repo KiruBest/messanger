@@ -2,6 +2,7 @@ package com.example.messanger.data.repository
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.example.messanger.data.core.Constants.NOTIFICATION_TOKEN_REF
 import com.example.messanger.data.core.Constants.USERS_REF
 import com.example.messanger.data.core.Constants.USER_ID
 import com.example.messanger.data.core.Constants.USER_PHONE
@@ -19,6 +20,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +33,8 @@ import kotlin.coroutines.suspendCoroutine
 class AccountService(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseReference: DatabaseReference,
-    private val storageReference: StorageReference
+    private val storageReference: StorageReference,
+    private val firebaseMessaging: FirebaseMessaging
 ) : IAccountService {
     private var storedVerificationId: String? = null
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
@@ -88,6 +91,15 @@ class AccountService(
                                 refToUser.child(USER_ID).setValue(user.uid)
                                 refToUser.child(USER_PHONE).setValue(user.phoneNumber)
                                 refToUser.child(USER_STATUS).setValue(UserState.ONLINE.state)
+
+                                firebaseMessaging.token.addOnCompleteListener { tokenTask ->
+                                    if (tokenTask.isSuccessful) {
+                                        val token = tokenTask.result
+                                        firebaseReference.child(NOTIFICATION_TOKEN_REF).child(user.uid).setValue(token)
+                                        Log.i("Token", token)
+                                    }
+
+                                }
                             }
 
                             continuation.resume(AsyncOperationResult.Success(task.result.user != null))
