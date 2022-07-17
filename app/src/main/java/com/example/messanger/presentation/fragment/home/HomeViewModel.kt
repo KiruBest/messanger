@@ -86,4 +86,5 @@ class HomeViewModel(
         val result = messengerService.searchUser(newText)
         _usersListFlow.value = AsyncOperationResult.Success(result)
     }
+
 }

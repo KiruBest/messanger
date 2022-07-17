@@ -5,9 +5,9 @@ object Constants {
     const val USER_ID = "id"
     const val USER_PHONE = "phone"
     const val USER_USERNAME = "username"
-    const val USER_F_NAME = "fName"
-    const val USER_M_NAME = "mName"
-    const val USER_L_NAME = "lName"
+    const val USER_F_NAME = "fname"
+    const val USER_M_NAME = "mname"
+    const val USER_L_NAME = "lname"
     const val USER_AVATAR_URL = "avatarUrl"
     const val USER_DATA_BIRTH = "dataBirth"
 

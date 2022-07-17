@@ -15,23 +15,26 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.messanger.R
 import com.example.messanger.databinding.FragmentAccountSettingsBinding
+import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.domain.model.UserDto
 import com.example.messanger.presentation.core.BaseFragment
+import com.example.messanger.presentation.core.Constants
 import com.redmadrobot.inputmask.MaskedTextChangedListener
 import java.text.SimpleDateFormat
 import java.util.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AccountSettings : BaseFragment() {
 
     private lateinit var binding: FragmentAccountSettingsBinding
     private lateinit var pictureActivityResult: ActivityResultLauncher<Intent>
-    private var user: UserDto? = null
     private var bitmap: Bitmap? = null
-
     private val viewModel: AccountSettingsViewModel by viewModel()
     private var user: UserDto? = null
 
@@ -63,6 +66,7 @@ class AccountSettings : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val userId = requireArguments().getString(Constants.USER_DTO)
 
         binding.editTextPhone.addTextChangedListener(
             MaskedTextChangedListener(
@@ -89,48 +93,68 @@ class AccountSettings : BaseFragment() {
             ).show()
         }
 
-
-        user?.let { userDto ->
-            binding.editTextFirstName.setText(userDto.fName)
-            binding.editTextLastName.setText(userDto.lName)
-            binding.editTextMiddleName.setText(userDto.mName)
-            binding.editTextDate.setText(userDto.dataBirth)
-            binding.editTextPhone.setText(userDto.phone)
-        }
-
-        binding.buttonSave.setOnClickListener {
-            user?.let {
-                it.fName = binding.editTextFirstName.text.toString()
-                it.lName = binding.editTextLastName.text.toString()
-                it.mName = binding.editTextMiddleName.text.toString()
-                it.dataBirth = binding.editTextDate.text.toString()
-                it.phone = binding.editTextPhone.text.toString()
-                Log.d("Dva",user.toString())
-                viewModel.updateUser(it,bitmap)
-            }
+        binding.toolbarAccount.setNavigationOnClickListener{
+            findNavController().popBackStack()
         }
 
 
-        binding.buttonChangePhoto.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Сменить фото")
-                .setItems(
-                    arrayOf(
-                        "Сделать фото",
-                        "Выбрать из галереи",
-                        "Выход"
-                    )
-                ) { _, which ->
-                    when (which) {
-                        ACTION_OPEN_CAMERA -> {
-                            val makePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                            pictureActivityResult.launch(makePicture)
+        viewModel.getCurrentUser()
+        lifecycleScope.launchWhenCreated {
+            viewModel.userDtoFlow.collect {
+                when(it){
+                    is AsyncOperationResult.EmptyState -> {
+
+                    }
+                    is AsyncOperationResult.Failure -> {
+
+                    }
+                    is AsyncOperationResult.Loading -> {
+
+                    }
+                    is AsyncOperationResult.Success -> {
+                        user = it.data
+                        Log.d("Tri",it.data.toString())
+                        user?.let { userDto ->
+                            binding.editTextFirstName.setText(userDto.fName)
+                            binding.editTextLastName.setText(userDto.lName)
+                            binding.editTextMiddleName.setText(userDto.mName)
+                            binding.editTextDate.setText(userDto.dataBirth)
+                            binding.editTextPhone.setText(userDto.phone)
                         }
-                        ACTION_OPEN_GALLERY -> {
-                            val takePicture = Intent(Intent.ACTION_PICK)
-                            takePicture.type = "image/*"
-                            pictureActivityResult.launch(takePicture)
+
+                        binding.buttonSave.setOnClickListener {
+                            user?.let {
+                                it.fName = binding.editTextFirstName.text.toString()
+                                it.lName = binding.editTextLastName.text.toString()
+                                it.mName = binding.editTextMiddleName.text.toString()
+                                it.dataBirth = binding.editTextDate.text.toString()
+                                it.phone = binding.editTextPhone.text.toString()
+                                Log.d("Dva", user.toString())
+                                viewModel.updateUser(it, bitmap)
+                            }
                         }
+
+
+                        binding.buttonChangePhoto.setOnClickListener {
+                            MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Сменить фото")
+                                .setItems(
+                                    arrayOf(
+                                        "Сделать фото",
+                                        "Выбрать из галереи",
+                                        "Выход"
+                                    )
+                                ) { _, which ->
+                                    when (which) {
+                                        ACTION_OPEN_CAMERA -> {
+                                            val makePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                                            pictureActivityResult.launch(makePicture)
+                                        }
+                                        ACTION_OPEN_GALLERY -> {
+                                            val takePicture = Intent(Intent.ACTION_PICK)
+                                            takePicture.type = "image/*"
+                                            pictureActivityResult.launch(takePicture)
+                                        }
 //                        ACTION_DELETE_AVATAR -> {
 //                            viewBinding.imageViewAvatar.setImageDrawable(
 //                                ContextCompat.getDrawable(
@@ -138,9 +162,13 @@ class AccountSettings : BaseFragment() {
 //                                )
 //                            )
 //                        }
+                                    }
+                                }
+                                .show()
+                        }
                     }
                 }
-                .show()
+            }
         }
     }
 
@@ -150,7 +178,7 @@ class AccountSettings : BaseFragment() {
         binding.editTextDate.setText(sdf.format(cal.time))
     }
 
-    companion object{
+    companion object {
         private const val ACTION_OPEN_CAMERA = 0
         private const val ACTION_OPEN_GALLERY = 1
         private const val ACTION_DELETE_AVATAR = 2
