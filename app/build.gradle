@@ -60,6 +60,16 @@ dependencies {
     implementation 'com.github.RedMadRobot:input-mask-android:6.1.0'
     implementation 'io.github.chaosleung:pinview:1.4.4'
 
+    // OkHttp 3
+    // define a BOM and its version
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+    // define any required OkHttp artifacts without version
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.9.0'
+
     // Koin for Android
     implementation "io.insert-koin:koin-android:$koin_version"
 
