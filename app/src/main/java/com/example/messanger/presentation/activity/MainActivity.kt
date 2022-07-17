@@ -2,6 +2,9 @@ package com.example.messanger.presentation.activity
 
 import android.app.*
 import android.content.*
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -9,9 +12,17 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.messanger.R
 import com.example.messanger.notification.PushService
+import com.example.messanger.presentation.core.Constants.BODY
 import com.example.messanger.presentation.core.Constants.COMPANION_ID
+import com.example.messanger.presentation.core.Constants.PHOTO
+import com.example.messanger.presentation.core.Constants.TITLE
+import java.util.*
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,10 +35,12 @@ class MainActivity : AppCompatActivity() {
         pushBroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val extras = intent?.extras
-                val title = extras?.getString("title")
-                val body = extras?.getString("body")
+                val title = extras?.getString(TITLE)
+                val body = extras?.getString(BODY)
+                val photo = extras?.getString(PHOTO)
+                val notificationID = Random.nextInt()
 
-                Log.i("TAG1", extras.toString())
+                extras?.putInt(NOTIFICATION_ID, notificationID)
 
                 val resultIntent = Intent(context, MainActivity::class.java)
 
@@ -43,7 +56,23 @@ class MainActivity : AppCompatActivity() {
                     .setContentText(body)
                     .setSmallIcon(R.drawable.ic_gazprom)
                     .setContentIntent(resultPendingIntent)
-                    .build()
+
+                Glide.with(context!!).asBitmap().circleCrop().placeholder(R.drawable.ic_gazprom).load(photo)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
+                            notification.setLargeIcon(resource)
+
+                            with(NotificationManagerCompat.from(context)) {
+                                notify(notificationID, notification.build())
+                            }
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+                    })
 
                 val name = NOTIFICATION_CHANNEL_ID
                 val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -53,10 +82,6 @@ class MainActivity : AppCompatActivity() {
                 val notificationManager: NotificationManager =
                     getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.createNotificationChannel(channel)
-
-                with(NotificationManagerCompat.from(context!!)) {
-                    notify(0, notification)
-                }
             }
         }
 
@@ -70,20 +95,19 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         intent.extras?.getBundle(NOTIFICATION_EXTRAS)?.let { bundle ->
-            Log.i("TAG1", bundle.getString(COMPANION_ID).toString())
+            val notificationID = bundle.getInt(NOTIFICATION_ID)
             val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
             val navController = navHostFragment.navController
             navController.navigate(R.id.chatFragment, bundleOf(COMPANION_ID to bundle.getString(COMPANION_ID)))
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(notificationID)
         }
-    }
-
-    override fun onDestroy() {
-        unregisterReceiver(pushBroadcastReceiver)
-        super.onDestroy()
     }
 
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "gazprom_notification_channel"
         private const val NOTIFICATION_EXTRAS = "notificationExtras"
+        private const val NOTIFICATION_ID = "notification_id"
     }
 }

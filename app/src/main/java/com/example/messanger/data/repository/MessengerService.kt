@@ -1,6 +1,7 @@
 package com.example.messanger.data.repository
 
 import android.util.Log
+import com.example.messanger.BuildConfig
 import com.example.messanger.data.core.Constants.CHAT_TYPE
 import com.example.messanger.data.core.Constants.MAIN_LIST_REF
 import com.example.messanger.data.core.Constants.MESSAGE_FROM
@@ -22,6 +23,7 @@ import com.example.messanger.domain.core.DatabaseReadDataException
 import com.example.messanger.domain.core.UserUnAuthException
 import com.example.messanger.domain.model.*
 import com.example.messanger.domain.repository.IMessengerService
+import com.example.messanger.presentation.core.CompanionTitleBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
@@ -43,6 +45,8 @@ class MessengerService(
 ) : IMessengerService {
     private val usersList: MutableList<UserDto> = mutableListOf()
     private val chatItemList = mutableListOf<ChatItemDto>()
+
+    private val gson = Gson()
 
     override suspend fun getUsersList(): AsyncOperationResult<List<UserDto>> =
         withContext(Dispatchers.IO) {
@@ -105,42 +109,53 @@ class MessengerService(
                     continuation.resume(AsyncOperationResult.Failure(it))
                 }
 
-                var token: String
-
                 firebaseRef.child(NOTIFICATION_TOKEN_REF).child(companionID).addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        token = snapshot.getValue<String>()!!
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
+                        val token = snapshot.getValue<String>()
 
-                            val notificationDto = NotificationDto(
-                                to = token,
-                                notificationNotificationDataDto = NotificationDataDto(
-                                    body = text,
-                                    title = "",
-                                    companionID = firebaseAuth.currentUser?.uid.toString(),
-                                    photo = ""
-                                )
-                            )
+                        firebaseRef.child(USERS_REF).child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val user = snapshot.mapToUserDto()
 
-                            val gson = Gson()
-                            val json = gson.toJson(notificationDto)
+                                val userName = if (user.fName != "" || user.lName != "") {
+                                    "${user.fName} ${user.lName}"
+                                } else {
+                                    user.phone
+                                }
 
-                            Log.v("TAG1", token)
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    token?.let {
+                                        val notificationDto = NotificationDto(
+                                            to = it,
+                                            notificationNotificationDataDto = NotificationDataDto(
+                                                body = text,
+                                                title = userName,
+                                                companionID = uid,
+                                                photo = user.avatarUrl
+                                            )
+                                        )
 
-                            val body: RequestBody = RequestBody.create(JSON, json)
+                                        val json = gson.toJson(notificationDto)
 
-                            val request = Request.Builder()
-                                .url("https://fcm.googleapis.com/fcm/send")
-                                .addHeader("Authorization", "key=AAAAAcncogc:APA91bFhtUMgGTkaCDE382YTg65bd8sD1kVn_302C1fLwJfsYKfhLghwrx-MAeYHc0ohipcOzmn11QxGH45i9CO6_gB0qOJcOevBLdI3tG07-RC6LHGcIii8kU47XZz8ETuE2PhIeB-1")
-                                .addHeader("Content-Type", "application/json")
-                                .post(body)
-                                .build()
+                                        val body: RequestBody = RequestBody.create(JSON, json)
 
-                            val client = OkHttpClient()
-                            val call: Call = client.newCall(request)
-                            val response: Response = call.execute()
-                        }
+                                        val request = Request.Builder()
+                                            .url(NOTIFICATION_SENDER_URL)
+                                            .addHeader("Authorization", "key=$NOTIFICATION_API_KEY")
+                                            .addHeader("Content-Type", "application/json")
+                                            .post(body)
+                                            .build()
+
+                                        val client = OkHttpClient()
+                                        val call: Call = client.newCall(request)
+                                        call.execute()
+                                    }
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                            }
+                        })
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -337,5 +352,11 @@ class MessengerService(
                         || it.phone.contains(newText, true)
             }
         } else usersList
+    }
+
+    companion object {
+        private val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
+        private const val NOTIFICATION_SENDER_URL = "https://fcm.googleapis.com/fcm/send"
+        private const val NOTIFICATION_API_KEY = BuildConfig.NOTIFICATION_API_KEY
     }
 }
