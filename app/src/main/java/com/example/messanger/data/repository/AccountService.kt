@@ -184,6 +184,7 @@ class AccountService(
 
                     }
                     firebaseReference.child(USERS_REF).child(userId).setValue(userDto)
+                    Log.d("Adin",userDto.toString())
                 } ?: continuation.resume(AsyncOperationResult.Failure(UserUnAuthException()))
             }
         }

@@ -21,7 +21,7 @@ class AccountSettingsViewModel(
         }
     }
 
-    fun getBitmap(data: Intent, contentResolver: ContentResolver) {
+    fun getBitmap(data: Intent, contentResolver: ContentResolver): Bitmap? {
         var bitmap: Bitmap? = null
 
         if (data.hasExtra(DATA)) {
@@ -46,6 +46,7 @@ class AccountSettingsViewModel(
                 rotateImage(bitmap, orientation)
             }
         }
+        return bitmap
     }
 
     private fun rotateImage(source: Bitmap, orientation: Int): Bitmap {
