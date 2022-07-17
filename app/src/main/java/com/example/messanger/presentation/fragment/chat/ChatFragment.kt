@@ -2,6 +2,7 @@ package com.example.messanger.presentation.fragment.chat
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.domain.model.UserDto
 import com.example.messanger.presentation.core.BaseFragment
 import com.example.messanger.presentation.core.CompanionTitleBuilder
+import com.example.messanger.presentation.core.Constants.COMPANION_ID
 import com.example.messanger.presentation.core.Constants.USER_DTO
 import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -27,7 +29,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ChatFragment : BaseFragment() {
 
     private lateinit var binding: FragmentChatBinding
-    private lateinit var companion: UserDto
+    private lateinit var companionID: String
     private lateinit var singleChatAdapter: SingleChatAdapter
 
     private val viewModel: ChatViewModel by viewModel()
@@ -49,11 +51,11 @@ class ChatFragment : BaseFragment() {
             findNavController().popBackStack(R.id.chatFragment, true)
         }
 
-        companion = requireArguments().getSerializable(USER_DTO) as UserDto
+        companionID = requireArguments().getString(COMPANION_ID)!!
 
         val recyclerView = binding.recyclerViewMessages
 
-        singleChatAdapter = SingleChatAdapter(emptyList(), companion.id)
+        singleChatAdapter = SingleChatAdapter(emptyList(), companionID)
         val linearLayoutManager = LinearLayoutManager(requireContext())
 
         linearLayoutManager.reverseLayout
@@ -80,20 +82,9 @@ class ChatFragment : BaseFragment() {
             }
         })
 
-        toolbar.findViewById<TextView>(R.id.companionName).text =
-            CompanionTitleBuilder(companion, requireContext()).getTitle()
-
-        toolbar.findViewById<TextView>(R.id.companionStatus).text = companion.status
-
-        Glide.with(requireContext())
-            .load(companion.avatarUrl)
-            .circleCrop()
-            .placeholder(R.drawable.ic_baseline_account_circle)
-            .into(toolbar.findViewById(R.id.companionAvatar))
-
         binding.imageViewSendMessage.setOnClickListener {
             val message = binding.editTextSendMessage.text.toString()
-            viewModel.sendMessage(message, companion.id)
+            viewModel.sendMessage(message, companionID)
             binding.editTextSendMessage.text.clear()
             recyclerView.scrollToPosition(singleChatAdapter.itemCount - 1)
         }
@@ -109,13 +100,37 @@ class ChatFragment : BaseFragment() {
                         singleChatAdapter.updateMessageList(messages)
                         recyclerView.scrollToPosition(singleChatAdapter.itemCount - 1)
                         messages.forEach {
-                            if (!it.seen) viewModel.readMessage(companion.id, it.id)
+                            if (!it.seen) viewModel.readMessage(companionID, it.id)
                         }
                     }
                 }
             }
         }
 
-        viewModel.getMessages(companion.id)
+        lifecycleScope.launchWhenCreated {
+            viewModel.companionFlow.collect { result ->
+                when(result) {
+                    is AsyncOperationResult.EmptyState -> {}
+                    is AsyncOperationResult.Failure -> {}
+                    is AsyncOperationResult.Loading -> {}
+                    is AsyncOperationResult.Success -> {
+                        val companion = result.data
+                        toolbar.findViewById<TextView>(R.id.companionName).text =
+                            CompanionTitleBuilder(companion, requireContext()).getTitle()
+
+                        toolbar.findViewById<TextView>(R.id.companionStatus).text = companion.status
+
+                        Glide.with(requireContext())
+                            .load(companion.avatarUrl)
+                            .circleCrop()
+                            .placeholder(R.drawable.ic_baseline_account_circle)
+                            .into(toolbar.findViewById(R.id.companionAvatar))
+                    }
+                }
+            }
+        }
+
+        viewModel.getCompanionById(companionID)
+        viewModel.getMessages(companionID)
     }
 }

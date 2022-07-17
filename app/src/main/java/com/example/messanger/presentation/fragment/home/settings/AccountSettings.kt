@@ -28,10 +28,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class AccountSettings : BaseFragment() {
 
     private lateinit var binding: FragmentAccountSettingsBinding
-    private val viewModel: AccountSettingsViewModel by viewModel()
     private lateinit var pictureActivityResult: ActivityResultLauncher<Intent>
     private var user: UserDto? = null
     private var bitmap: Bitmap? = null
+
+    private val viewModel: AccountSettingsViewModel by viewModel()
+    private var user: UserDto? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

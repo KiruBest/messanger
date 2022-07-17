@@ -1,5 +1,7 @@
 package com.example.messanger.data.repository
 
+import android.util.Log
+import com.example.messanger.BuildConfig
 import com.example.messanger.data.core.Constants.CHAT_TYPE
 import com.example.messanger.data.core.Constants.MAIN_LIST_REF
 import com.example.messanger.data.core.Constants.MESSAGE_FROM
@@ -9,6 +11,7 @@ import com.example.messanger.data.core.Constants.MESSAGE_SEEN
 import com.example.messanger.data.core.Constants.MESSAGE_TEXT
 import com.example.messanger.data.core.Constants.MESSAGE_TIMESTAMP
 import com.example.messanger.data.core.Constants.MESSAGE_TYPE
+import com.example.messanger.data.core.Constants.NOTIFICATION_TOKEN_REF
 import com.example.messanger.data.core.Constants.USERS_REF
 import com.example.messanger.data.core.Constants.USER_ID
 import com.example.messanger.data.core.mapToChatDto
@@ -18,24 +21,23 @@ import com.example.messanger.data.core.mapToUserDto
 import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.domain.core.DatabaseReadDataException
 import com.example.messanger.domain.core.UserUnAuthException
-import com.example.messanger.domain.model.ChatDto
-import com.example.messanger.domain.model.ChatItemDto
-import com.example.messanger.domain.model.MessageDto
-import com.example.messanger.domain.model.UserDto
+import com.example.messanger.domain.model.*
 import com.example.messanger.domain.repository.IMessengerService
+import com.example.messanger.presentation.core.CompanionTitleBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
-import kotlinx.coroutines.Dispatchers
+import com.google.gson.Gson
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
 
 class MessengerService(
     private val firebaseAuth: FirebaseAuth,
@@ -43,6 +45,8 @@ class MessengerService(
 ) : IMessengerService {
     private val usersList: MutableList<UserDto> = mutableListOf()
     private val chatItemList = mutableListOf<ChatItemDto>()
+
+    private val gson = Gson()
 
     override suspend fun getUsersList(): AsyncOperationResult<List<UserDto>> =
         withContext(Dispatchers.IO) {
@@ -104,6 +108,59 @@ class MessengerService(
                 firebaseRef.updateChildren(mapDialog).addOnFailureListener {
                     continuation.resume(AsyncOperationResult.Failure(it))
                 }
+
+                firebaseRef.child(NOTIFICATION_TOKEN_REF).child(companionID).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val token = snapshot.getValue<String>()
+
+                        firebaseRef.child(USERS_REF).child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val user = snapshot.mapToUserDto()
+
+                                val userName = if (user.fName != "" || user.lName != "") {
+                                    "${user.fName} ${user.lName}"
+                                } else {
+                                    user.phone
+                                }
+
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    token?.let {
+                                        val notificationDto = NotificationDto(
+                                            to = it,
+                                            notificationNotificationDataDto = NotificationDataDto(
+                                                body = text,
+                                                title = userName,
+                                                companionID = uid,
+                                                photo = user.avatarUrl
+                                            )
+                                        )
+
+                                        val json = gson.toJson(notificationDto)
+
+                                        val body: RequestBody = RequestBody.create(JSON, json)
+
+                                        val request = Request.Builder()
+                                            .url(NOTIFICATION_SENDER_URL)
+                                            .addHeader("Authorization", "key=$NOTIFICATION_API_KEY")
+                                            .addHeader("Content-Type", "application/json")
+                                            .post(body)
+                                            .build()
+
+                                        val client = OkHttpClient()
+                                        val call: Call = client.newCall(request)
+                                        call.execute()
+                                    }
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                            }
+                        })
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
             }
         }
     }
@@ -271,6 +328,22 @@ class MessengerService(
         }
     }
 
+    override suspend fun getCompanionById(companionID: String): AsyncOperationResult<UserDto> = withContext(Dispatchers.IO) {
+        suspendCoroutine { continuation ->
+            firebaseRef.child(USERS_REF).child(companionID).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.mapToUserDto()
+
+                    continuation.resume(AsyncOperationResult.Success(user))
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    continuation.resume(AsyncOperationResult.Failure(DatabaseReadDataException()))
+                }
+            })
+        }
+    }
+
     override fun searchUser(newText: String?): List<UserDto> {
         return if (newText != null) {
             usersList.filter {
@@ -279,5 +352,11 @@ class MessengerService(
                         || it.phone.contains(newText, true)
             }
         } else usersList
+    }
+
+    companion object {
+        private val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
+        private const val NOTIFICATION_SENDER_URL = "https://fcm.googleapis.com/fcm/send"
+        private const val NOTIFICATION_API_KEY = BuildConfig.NOTIFICATION_API_KEY
     }
 }

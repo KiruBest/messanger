@@ -22,6 +22,7 @@ import com.example.messanger.domain.core.UserState
 import com.example.messanger.domain.model.UserDto
 import com.example.messanger.presentation.core.BaseFragment
 import com.example.messanger.presentation.core.Constants
+import com.example.messanger.presentation.core.Constants.COMPANION_ID
 import com.example.messanger.presentation.fragment.authentication.LoginViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -49,7 +50,7 @@ class HomeFragment : BaseFragment() {
 
         _adapter = HomeChatAdapter(emptyList()) { chatItemDto ->
             val userDto = chatItemDto.mapToUserDto()
-            val bundle = bundleOf(Constants.USER_DTO to userDto)
+            val bundle = bundleOf(COMPANION_ID to userDto.id)
             findNavController().navigate(R.id.action_homeFragment_to_chatFragment, bundle)
         }
 

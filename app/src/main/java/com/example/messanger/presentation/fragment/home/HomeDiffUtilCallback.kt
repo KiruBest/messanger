@@ -1,4 +1,4 @@
-package com.example.messanger.presentation.fragment
+package com.example.messanger.presentation.fragment.home
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.messanger.domain.model.ChatItemDto
