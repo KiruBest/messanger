@@ -10,6 +10,7 @@ object Constants {
     const val USER_L_NAME = "lname"
     const val USER_AVATAR_URL = "avatarUrl"
     const val USER_DATA_BIRTH = "dataBirth"
+    const val USER_TEXT_STATUS = "userTextStatus"
 
     const val MESSAGE_ID = "id"
     const val MESSAGE_TEXT = "text"

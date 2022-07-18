@@ -78,14 +78,20 @@ class AccountSettingsViewModel(
         )
     }
 
-    companion object {
-        private const val DATA = "data"
-    }
-
     fun getCurrentUser() {
         viewModelScope.launch {
             val result = accountService.getCurrentUser()
             _userDtoFlow.tryEmit(result)
         }
+    }
+
+    fun setUserAccountStatus(text: String) {
+        viewModelScope.launch {
+            accountService.setUserAccountStatus(text)
+        }
+    }
+
+    companion object {
+        private const val DATA = "data"
     }
 }

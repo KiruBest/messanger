@@ -7,6 +7,7 @@ import com.example.messanger.data.core.Constants.USERS_REF
 import com.example.messanger.data.core.Constants.USER_ID
 import com.example.messanger.data.core.Constants.USER_PHONE
 import com.example.messanger.data.core.Constants.USER_STATUS
+import com.example.messanger.data.core.Constants.USER_TEXT_STATUS
 import com.example.messanger.data.core.mapToUserDto
 import com.example.messanger.domain.core.*
 import com.example.messanger.domain.model.UserDto
@@ -21,9 +22,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
@@ -134,12 +135,26 @@ class AccountService(
                             firebaseAuth.signOut()
                             continuation.resume(AsyncOperationResult.Success(firebaseAuth.currentUser == null))
                         } else {
-                            continuation.resume(AsyncOperationResult.Failure(DatabaseReadDataException()))
+                            continuation.resume(
+                                AsyncOperationResult.Failure(
+                                    DatabaseReadDataException()
+                                )
+                            )
                         }
                     }
             }
         }
     }
+
+    override suspend fun setUserAccountStatus(text: String): AsyncOperationResult<String> =
+        withContext(Dispatchers.IO) {
+            suspendCancellableCoroutine { continuation ->
+                firebaseAuth.currentUser?.uid?.let {
+                    firebaseReference.child(USERS_REF).child(it)
+                        .updateChildren(mapOf(USER_TEXT_STATUS to text))
+                } ?: continuation.resume(AsyncOperationResult.Failure(UserUnAuthException()))
+            }
+        }
 
     override suspend fun getCurrentUser(): AsyncOperationResult<UserDto> =
         withContext(Dispatchers.IO) {

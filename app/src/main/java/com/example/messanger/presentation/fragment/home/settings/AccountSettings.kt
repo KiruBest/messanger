@@ -1,34 +1,31 @@
 package com.example.messanger.presentation.fragment.home.settings
 
-import android.app.DatePickerDialog
-import android.icu.util.Calendar
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.messanger.R
 import com.example.messanger.databinding.FragmentAccountSettingsBinding
 import com.example.messanger.domain.core.AsyncOperationResult
 import com.example.messanger.domain.model.UserDto
 import com.example.messanger.presentation.core.BaseFragment
-import com.example.messanger.presentation.core.Constants
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.redmadrobot.inputmask.MaskedTextChangedListener
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.flow.collect
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AccountSettings : BaseFragment() {
 
@@ -66,7 +63,6 @@ class AccountSettings : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId = requireArguments().getString(Constants.USER_DTO)
 
         binding.editTextPhone.addTextChangedListener(
             MaskedTextChangedListener(
@@ -76,7 +72,7 @@ class AccountSettings : BaseFragment() {
         )
 
         val cal = Calendar.getInstance()
-        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             cal.set(Calendar.YEAR, year)
             cal.set(Calendar.MONTH, month)
             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -94,7 +90,7 @@ class AccountSettings : BaseFragment() {
         }
 
         binding.toolbarAccount.setNavigationOnClickListener{
-            findNavController().popBackStack()
+            findNavController().popBackStack(R.id.accountSettings, true)
         }
 
 
@@ -120,17 +116,21 @@ class AccountSettings : BaseFragment() {
                             binding.editTextMiddleName.setText(userDto.mName)
                             binding.editTextDate.setText(userDto.dataBirth)
                             binding.editTextPhone.setText(userDto.phone)
+
+                            Glide.with(requireContext()).load(userDto.avatarUrl)
+                                .placeholder(R.drawable.ic_baseline_account_circle)
+                                .circleCrop().into(binding.imageViewAccount)
                         }
 
                         binding.buttonSave.setOnClickListener {
-                            user?.let {
-                                it.fName = binding.editTextFirstName.text.toString()
-                                it.lName = binding.editTextLastName.text.toString()
-                                it.mName = binding.editTextMiddleName.text.toString()
-                                it.dataBirth = binding.editTextDate.text.toString()
-                                it.phone = binding.editTextPhone.text.toString()
-                                Log.d("Dva", user.toString())
-                                viewModel.updateUser(it, bitmap)
+                            user?.let { userDto ->
+                                userDto.fName = binding.editTextFirstName.text.toString()
+                                userDto.lName = binding.editTextLastName.text.toString()
+                                userDto.mName = binding.editTextMiddleName.text.toString()
+                                userDto.dataBirth = binding.editTextDate.text.toString()
+                                userDto.phone = binding.editTextPhone.text.toString()
+
+                                viewModel.updateUser(userDto, bitmap)
                             }
                         }
 
@@ -176,6 +176,16 @@ class AccountSettings : BaseFragment() {
         val myFormat = "dd.MM.yyyy"
         val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
         binding.editTextDate.setText(sdf.format(cal.time))
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        bitmap?.let {
+            Glide.with(requireContext()).load(bitmap)
+                .placeholder(R.drawable.ic_baseline_account_circle)
+                .circleCrop().into(binding.imageViewAccount)
+        }
     }
 
     companion object {

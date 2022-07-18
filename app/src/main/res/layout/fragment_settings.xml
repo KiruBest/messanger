@@ -15,6 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/search_menu"
+        app:navigationIcon="?homeAsUpIndicator"
         app:title="@string/settings_fragment_settings"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.AccountSettingsToolbarTitle"
         app:titleTextColor="@color/aqua_color" />
@@ -27,7 +28,8 @@
         android:layout_marginTop="18dp"
         android:src="@drawable/ic_baseline_account_circle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarSettings" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarSettings"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/textViewName"
@@ -51,7 +53,8 @@
         android:inputType="textPersonName"
         android:textAppearance="@style/TextAppearance.AppCompat.StatusEditText"
         app:layout_constraintStart_toEndOf="@+id/imageViewSettings"
-        app:layout_constraintTop_toBottomOf="@+id/textViewName" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewName"
+        android:importantForAutofill="no" />
 
     <View
         android:id="@+id/viewLine"
@@ -76,7 +79,8 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewLine" />
+        app:layout_constraintTop_toBottomOf="@+id/viewLine"
+        tools:ignore="RtlHardcoded" />
 
     <Button
         style="@style/Widget.Material3.Button.TextButton"
@@ -91,6 +95,7 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonAccountSettings" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonAccountSettings"
+        tools:ignore="RtlHardcoded" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
