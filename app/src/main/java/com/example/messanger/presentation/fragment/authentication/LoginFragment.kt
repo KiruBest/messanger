@@ -89,7 +89,7 @@ class LoginFragment : Fragment() {
 
         binding.editTextLogIn.addTextChangedListener(
             MaskedTextChangedListener(
-                "+7 ([000]) [000]-[00]-[00]",
+                "+7-([000])-[000]-[00]-[00]",
                 binding.editTextLogIn
             )
         )

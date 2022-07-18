@@ -23,6 +23,7 @@ import com.example.messanger.domain.model.UserDto
 import com.example.messanger.presentation.core.BaseFragment
 import com.example.messanger.presentation.core.Constants
 import com.example.messanger.presentation.core.Constants.COMPANION_ID
+import com.example.messanger.presentation.core.Constants.USER_DTO
 import com.example.messanger.presentation.fragment.authentication.LoginViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -85,7 +86,8 @@ class HomeFragment : BaseFragment() {
                         toolbar.setOnMenuItemClickListener {
                             when (it.itemId) {
                                 R.id.accountSettingsMenu -> {
-                                    findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
+                                    findNavController().navigate(R.id.action_homeFragment_to_settingsFragment, bundleOf(
+                                        USER_DTO to value.data.id))
                                     true
                                 }
                                 R.id.logOut -> {

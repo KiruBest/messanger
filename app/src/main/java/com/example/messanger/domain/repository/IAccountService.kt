@@ -12,5 +12,6 @@ interface IAccountService {
     suspend fun updateUserParams(userDto: UserDto, bitmap: Bitmap? = null): AsyncOperationResult<Boolean>
     suspend fun updateUserState(state: UserState): AsyncOperationResult<UserDto>
     suspend fun logOut(): AsyncOperationResult<Boolean>
+    suspend fun setUserAccountStatus(text: String): AsyncOperationResult<String>
     fun userAuthCheck(): Boolean
 }

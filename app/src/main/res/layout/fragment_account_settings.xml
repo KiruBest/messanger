@@ -1,14 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentation.fragment.home.settings.AccountSettings">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarAccount"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/toolbar_height"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="?homeAsUpIndicator"
+        app:title="@string/account_fragment_account_set"
+        app:titleTextAppearance="@style/TextAppearance.AppCompat.AccountSettingsToolbarTitle"
+        app:titleTextColor="#33BEE7" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/imageViewAccount"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="11dp"
+        android:src="@drawable/ic_baseline_account_circle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarAccount" />
+
+    <Button
+        android:id="@+id/buttonChangePhoto"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/change_photo_fragment_account_set"
+        android:textColor="#2A8BE6"
+        app:layout_constraintStart_toEndOf="@+id/imageViewAccount"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarAccount" />
+
+    <EditText
+        android:id="@+id/editTextFirstName"
+        style="@style/ThemeOverlay.Material3.TextInputEditText.AccountSettingsEditText"
+        android:layout_marginTop="27dp"
+        android:hint="@string/first_name_fragment_account_set"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewAccount" />
+
+    <EditText
+        android:id="@+id/editTextLastName"
+        style="@style/ThemeOverlay.Material3.TextInputEditText.AccountSettingsEditText"
+        android:layout_marginTop="16dp"
+        android:hint="@string/last_name_fragment_account_set"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextFirstName" />
+
+    <EditText
+        android:id="@+id/editTextMiddleName"
+        style="@style/ThemeOverlay.Material3.TextInputEditText.AccountSettingsEditText"
+        android:layout_marginTop="16dp"
+        android:hint="@string/middle_name_fragment_account_set"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLastName" />
+
+    <EditText
+        android:id="@+id/editTextDate"
+        style="@style/ThemeOverlay.Material3.TextInputEditText.AccountSettingsEditText"
+        android:layout_marginTop="16dp"
+        android:hint="@string/birthdate_fragment_account_set"
+        android:inputType="date"
+        android:focusable="false"
+        android:drawableEnd="@drawable/ic_arrow_down"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextMiddleName" />
+
+    <EditText
+        android:id="@+id/editTextPhone"
+        style="@style/ThemeOverlay.Material3.TextInputEditText.AccountSettingsEditText"
+        android:layout_marginTop="16dp"
+        android:digits="+-() 1234567890"
+        android:hint="@string/login_fragment_login"
+        android:inputType="phone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDate" />
+
+    <Button
+        android:id="@+id/buttonSave"
+        style="@style/ShapeAppearanceOverlay.Material3.Button.BlueButton"
+        android:layout_marginBottom="60dp"
+        android:text="@string/save_fragment_account_set"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

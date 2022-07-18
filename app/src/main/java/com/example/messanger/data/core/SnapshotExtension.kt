@@ -9,9 +9,11 @@ import com.example.messanger.data.core.Constants.MESSAGE_TEXT
 import com.example.messanger.data.core.Constants.MESSAGE_TIMESTAMP
 import com.example.messanger.data.core.Constants.MESSAGE_TYPE
 import com.example.messanger.data.core.Constants.USER_AVATAR_URL
+import com.example.messanger.data.core.Constants.USER_DATA_BIRTH
 import com.example.messanger.data.core.Constants.USER_F_NAME
 import com.example.messanger.data.core.Constants.USER_ID
 import com.example.messanger.data.core.Constants.USER_L_NAME
+import com.example.messanger.data.core.Constants.USER_M_NAME
 import com.example.messanger.data.core.Constants.USER_PHONE
 import com.example.messanger.data.core.Constants.USER_STATUS
 import com.example.messanger.data.core.Constants.USER_USERNAME
@@ -26,10 +28,12 @@ fun DataSnapshot.mapToUserDto() = UserDto(
     id = child(USER_ID).getValue<String>() ?: "",
     username = child(USER_USERNAME).getValue<String>() ?: "",
     fName = child(USER_F_NAME).getValue<String>() ?: "",
+    mName = child(USER_M_NAME).getValue<String>() ?: "",
     lName = child(USER_L_NAME).getValue<String>() ?: "",
     status = child(USER_STATUS).getValue<String>() ?: "",
     avatarUrl = child(USER_AVATAR_URL).getValue<String>() ?: "",
-    phone = child(USER_PHONE).getValue<String>() ?: ""
+    phone = child(USER_PHONE).getValue<String>() ?: "",
+    dataBirth = child(USER_DATA_BIRTH).getValue<String>() ?: ""
 )
 
 fun DataSnapshot.mapToMessageDto() = MessageDto(
@@ -45,6 +49,7 @@ fun DataSnapshot.mapToChatItemDto() = ChatItemDto(
     userID = child(USER_ID).getValue<String>() ?: "",
     username = child(USER_USERNAME).getValue<String>() ?: "",
     fName = child(USER_F_NAME).getValue<String>() ?: "",
+    mName = child(USER_M_NAME).getValue<String>() ?: "",
     lName = child(USER_L_NAME).getValue<String>() ?: "",
     status = child(USER_STATUS).getValue<String>() ?: "",
     avatarUrl = child(USER_AVATAR_URL).getValue<String>() ?: "",
@@ -55,7 +60,8 @@ fun DataSnapshot.mapToChatItemDto() = ChatItemDto(
     from = child(MESSAGE_FROM).getValue<String>() ?: "",
     timestamp = child(MESSAGE_TIMESTAMP).getValue<Long>() ?: -1,
     seen = child(MESSAGE_SEEN).getValue<Boolean>() ?: true,
-    noSeenMessageCount = child(MESSAGE_NO_SEEN_COUNT).getValue<Int>() ?: 0
+    noSeenMessageCount = child(MESSAGE_NO_SEEN_COUNT).getValue<Int>() ?: 0,
+    dataBirth = child(USER_DATA_BIRTH).getValue<String>() ?: ""
 )
 
 fun DataSnapshot.mapToChatDto() = ChatDto(

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">GazpromMessenger</string>
-    <string name="login_fragment_login">+7 (999)–999–99–99</string>
+    <string name="login_fragment_login">+7-(999)–999–99–99</string>
     <string name="welcome_fragment_login">Добро пожаловать!</string>
     <string name="number_fragment_login">Введите ваш номер телефона \n для создания аккаунта</string>
     <string name="error_fragment_login">Неверный логин или пароль</string>
@@ -14,5 +14,18 @@
     <string name="account">account</string>
     <string name="full_name">%1s %2s</string>
     <string name="search">Search</string>
+    <string name="account_fragment_account_set">Аккаунт</string>
+    <string name="change_photo_fragment_account_set">Сменить фото</string>
+    <string name="first_name_fragment_account_set">Иван</string>
+    <string name="last_name_fragment_account_set">Кузнецов</string>
+    <string name="middle_name_fragment_account_set">Сергеевич</string>
+    <string name="birthdate_fragment_account_set">10.09.1992</string>
+    <string name="save_fragment_account_set">Сохранить</string>
+    <string name="settings_fragment_settings">Настройки</string>
+    <string name="status_fragment_settings">Укажите статус</string>
+    <string name="account_fragment_settings">Аккаунт</string>
+    <string name="notification_fragment_settings">Уведомления</string>
+
+
     <string name="write_message">Напишите сообщение</string>
 </resources>
