@@ -39,6 +39,7 @@ class HomeViewModel(
     val chatListFlow: LiveData<OperationResult<List<ChatItemDto>>> get() = _chatListFlow
 
     init {
+        getCurrentUser()
         getUsersList()
     }
 
@@ -76,7 +77,6 @@ class HomeViewModel(
                 OperationResult.Success(list.map(User::mapToUi))
             }
             _usersListFlow.value = result
-            _usersListFlow.value = OperationResult.Empty
         }
     }
 
