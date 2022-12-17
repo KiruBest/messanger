@@ -2,12 +2,10 @@ package com.example.messanger.presentation.fragment.chat
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.AbsListView
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
@@ -16,14 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.messanger.R
+import com.example.messanger.core.constants.Constants.COMPANION_ID
+import com.example.messanger.core.result.OperationResult
 import com.example.messanger.databinding.FragmentChatBinding
-import com.example.messanger.domain.core.AsyncOperationResult
-import com.example.messanger.domain.model.UserDto
-import com.example.messanger.presentation.core.BaseFragment
-import com.example.messanger.presentation.core.CompanionTitleBuilder
-import com.example.messanger.presentation.core.Constants.COMPANION_ID
-import com.example.messanger.presentation.core.Constants.USER_DTO
-import kotlinx.coroutines.flow.collect
+import com.example.messanger.presentation.fragment.base.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ChatFragment : BaseFragment() {
@@ -92,10 +86,10 @@ class ChatFragment : BaseFragment() {
         lifecycleScope.launchWhenCreated {
             viewModel.messageListFlow.collect { result ->
                 when (result) {
-                    is AsyncOperationResult.EmptyState -> {}
-                    is AsyncOperationResult.Failure -> TODO()
-                    is AsyncOperationResult.Loading -> {}
-                    is AsyncOperationResult.Success -> {
+                    is OperationResult.Empty -> {}
+                    is OperationResult.Error -> TODO()
+                    is OperationResult.Loading -> {}
+                    is OperationResult.Success -> {
                         val messages = result.data
                         singleChatAdapter.updateMessageList(messages)
                         recyclerView.scrollToPosition(singleChatAdapter.itemCount - 1)
@@ -109,14 +103,13 @@ class ChatFragment : BaseFragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.companionFlow.collect { result ->
-                when(result) {
-                    is AsyncOperationResult.EmptyState -> {}
-                    is AsyncOperationResult.Failure -> {}
-                    is AsyncOperationResult.Loading -> {}
-                    is AsyncOperationResult.Success -> {
+                when (result) {
+                    is OperationResult.Empty -> {}
+                    is OperationResult.Error -> {}
+                    is OperationResult.Loading -> {}
+                    is OperationResult.Success -> {
                         val companion = result.data
-                        toolbar.findViewById<TextView>(R.id.companionName).text =
-                            CompanionTitleBuilder(companion, requireContext()).getTitle()
+                        toolbar.findViewById<TextView>(R.id.companionName).text = companion.fullName
 
                         toolbar.findViewById<TextView>(R.id.companionStatus).text = companion.status
 
@@ -130,6 +123,8 @@ class ChatFragment : BaseFragment() {
             }
         }
 
+        /* todo Полная дичь конечно, надо в конструктор ViewModel инжектить через DI нужные параметры
+        и вызывать в init блоке viewModel */
         viewModel.getCompanionById(companionID)
         viewModel.getMessages(companionID)
     }

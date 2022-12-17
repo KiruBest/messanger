@@ -1,4 +1,4 @@
-package com.example.messanger.presentation.core
+package com.example.messanger.core.constants
 
 object Constants {
     const val USER_DTO = "userDto"

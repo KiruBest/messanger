@@ -5,12 +5,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.messanger.R
+import com.example.messanger.core.enumeration.UserState
 import com.example.messanger.databinding.ChatLayoutItemBinding
-import com.example.messanger.domain.core.UserState
 import com.example.messanger.domain.model.ChatItemDto
-import com.example.messanger.presentation.core.CompanionTitleBuilderFromChatItemDto
-import com.example.messanger.presentation.core.LastMessageBuilder
-import com.example.messanger.presentation.core.asDatHourMinute
+import com.example.messanger.presentation.utils.LastMessageBuilder
+import com.example.messanger.presentation.utils.asDatHourMinute
 
 class HomeChatViewHolder(binding: ChatLayoutItemBinding) : RecyclerView.ViewHolder(binding.root) {
     private val lastMessage = binding.lastMessage
@@ -24,7 +23,7 @@ class HomeChatViewHolder(binding: ChatLayoutItemBinding) : RecyclerView.ViewHold
     fun bind(chatItemDto: ChatItemDto) {
         lastMessage.text = LastMessageBuilder(chatItemDto).getLastMessageSingleChat()
 
-        userName.text = CompanionTitleBuilderFromChatItemDto(chatItemDto, context).getTitle()
+        userName.text = chatItemDto.userFullName
         time.text = chatItemDto.timestamp.asDatHourMinute()
         status.background = ContextCompat.getDrawable(context, R.color.aqua_color)
 

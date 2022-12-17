@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.messanger.databinding.SingleChatMessageLayoutBinding
-import com.example.messanger.domain.model.MessageDto
+import com.example.messanger.presentation.model.MessageUi
 
 class SingleChatAdapter(
-    private var messageList: List<MessageDto>,
+    private var messageList: List<MessageUi>,
     private val companionID: String
 ) : RecyclerView.Adapter<SingleChatViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleChatViewHolder {
@@ -23,7 +23,7 @@ class SingleChatAdapter(
 
     override fun getItemCount(): Int = messageList.size
 
-    fun updateMessageList(newMessageList: List<MessageDto>) {
+    fun updateMessageList(newMessageList: List<MessageUi>) {
         val diffUtilCallback = SingleChatDiffUtil(messageList, newMessageList)
         val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
         messageList = newMessageList

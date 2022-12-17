@@ -1,16 +1,10 @@
 package com.example.messanger.presentation.fragment.chat
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context.CLIPBOARD_SERVICE
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import com.example.messanger.databinding.SingleChatMessageLayoutBinding
-import com.example.messanger.domain.model.MessageDto
-import com.example.messanger.presentation.core.asDatHourMinute
+import com.example.messanger.presentation.model.MessageUi
+import com.example.messanger.presentation.utils.asDatHourMinute
 
 
 class SingleChatViewHolder(binding: SingleChatMessageLayoutBinding) :
@@ -23,7 +17,7 @@ class SingleChatViewHolder(binding: SingleChatMessageLayoutBinding) :
     private val constraintLayoutCurrentUser = binding.constraintLayoutCurrentUser
     private val context = binding.root.context
 
-    fun bind(messageDto: MessageDto, companionId: String) {
+    fun bind(messageDto: MessageUi, companionId: String) {
         if (messageDto.from == companionId) {
             textViewMessage.text = messageDto.text
             time.text = messageDto.timestamp.asDatHourMinute()

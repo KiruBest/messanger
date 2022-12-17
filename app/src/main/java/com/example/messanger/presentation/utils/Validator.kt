@@ -1,5 +1,6 @@
-package com.example.messanger.presentation.core
+package com.example.messanger.presentation.utils
 
+//todo Лучше удалить, лишнее, или хотя бы вынести в ресурсы
 fun String.validateNumber(): String {
     return when {
         this.isEmpty() -> "Необходимов ввести номер"

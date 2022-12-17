@@ -71,7 +71,7 @@
         tools:layout="@layout/fragment_account_settings" />
     <fragment
         android:id="@+id/addCompanionFragment"
-        android:name="com.example.messanger.presentation.fragment.home.companion.AddCompanionFragment"
+        android:name="com.example.messanger.presentation.fragment.home.companion.NewCompanionFragment"
         android:label="fragment_add_companion"
         tools:layout="@layout/fragment_add_companion" >
         <action

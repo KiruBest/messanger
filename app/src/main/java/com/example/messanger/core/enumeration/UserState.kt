@@ -1,4 +1,4 @@
-package com.example.messanger.domain.core
+package com.example.messanger.core.enumeration
 
 enum class UserState(val state: String) {
     ONLINE("Онлайн"),

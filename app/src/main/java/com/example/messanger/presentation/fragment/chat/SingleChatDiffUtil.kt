@@ -1,11 +1,11 @@
 package com.example.messanger.presentation.fragment.chat
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.messanger.domain.model.MessageDto
+import com.example.messanger.presentation.model.MessageUi
 
 class SingleChatDiffUtil(
-    private val oldList: List<MessageDto>,
-    private val newList: List<MessageDto>
+    private val oldList: List<MessageUi>,
+    private val newList: List<MessageUi>
 ): DiffUtil.Callback() {
     override fun getOldListSize(): Int = oldList.size
 

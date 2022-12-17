@@ -9,10 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.messanger.R
+import com.example.messanger.core.result.OperationResult
 import com.example.messanger.databinding.FragmentOtpBinding
-import com.example.messanger.domain.core.AsyncOperationResult
-import com.example.messanger.presentation.core.validateCode
-import kotlinx.coroutines.flow.collect
+import com.example.messanger.presentation.utils.validateCode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -51,21 +50,21 @@ class OtpFragment : Fragment() {
         lifecycleScope.launchWhenCreated {
             viewModel.codeSentFlow.collect { result ->
                 when (result) {
-                    is AsyncOperationResult.Success -> {
+                    is OperationResult.Success -> {
                         findNavController().navigate(R.id.action_otpFragment_to_homeFragment)
 
                         progressBar.visibility = View.GONE
                         textViewError.visibility = View.GONE
                     }
-                    is AsyncOperationResult.EmptyState -> {
+                    is OperationResult.Empty -> {
                         progressBar.visibility = View.GONE
                         textViewError.visibility = View.GONE
                     }
-                    is AsyncOperationResult.Loading -> {
+                    is OperationResult.Loading -> {
                         progressBar.visibility = View.VISIBLE
                         textViewError.visibility = View.GONE
                     }
-                    is AsyncOperationResult.Failure -> {
+                    is OperationResult.Error -> {
                         binding.pinViewOTP.text?.clear()
 
                         textViewError.text = "Неверный код"

@@ -17,10 +17,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.messanger.R
+import com.example.messanger.core.result.OperationResult
 import com.example.messanger.databinding.FragmentAccountSettingsBinding
-import com.example.messanger.domain.core.AsyncOperationResult
-import com.example.messanger.domain.model.UserDto
-import com.example.messanger.presentation.core.BaseFragment
+import com.example.messanger.presentation.fragment.base.BaseFragment
+import com.example.messanger.presentation.model.UserUi
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.redmadrobot.inputmask.MaskedTextChangedListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,7 +33,7 @@ class AccountSettings : BaseFragment() {
     private lateinit var pictureActivityResult: ActivityResultLauncher<Intent>
     private var bitmap: Bitmap? = null
     private val viewModel: AccountSettingsViewModel by viewModel()
-    private var user: UserDto? = null
+    private var user: UserUi? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +89,7 @@ class AccountSettings : BaseFragment() {
             ).show()
         }
 
-        binding.toolbarAccount.setNavigationOnClickListener{
+        binding.toolbarAccount.setNavigationOnClickListener {
             findNavController().popBackStack(R.id.accountSettings, true)
         }
 
@@ -97,19 +97,21 @@ class AccountSettings : BaseFragment() {
         viewModel.getCurrentUser()
         lifecycleScope.launchWhenCreated {
             viewModel.userDtoFlow.collect {
-                when(it){
-                    is AsyncOperationResult.EmptyState -> {
+                /* todo (в целом полная фигня получилась с таким подходом, можно было сделать проще
+                надо обрабатывать OperationResult во вьюмодели и отдавать готовое флоу(или LiveData)) */
+                when (it) {
+                    is OperationResult.Empty -> {
 
                     }
-                    is AsyncOperationResult.Failure -> {
+                    is OperationResult.Error -> {
 
                     }
-                    is AsyncOperationResult.Loading -> {
+                    is OperationResult.Loading -> {
 
                     }
-                    is AsyncOperationResult.Success -> {
+                    is OperationResult.Success -> {
                         user = it.data
-                        Log.d("Tri",it.data.toString())
+                        Log.d("Tri", it.data.toString())
                         user?.let { userDto ->
                             binding.editTextFirstName.setText(userDto.fName)
                             binding.editTextLastName.setText(userDto.lName)
@@ -124,13 +126,14 @@ class AccountSettings : BaseFragment() {
 
                         binding.buttonSave.setOnClickListener {
                             user?.let { userDto ->
-                                userDto.fName = binding.editTextFirstName.text.toString()
-                                userDto.lName = binding.editTextLastName.text.toString()
-                                userDto.mName = binding.editTextMiddleName.text.toString()
-                                userDto.dataBirth = binding.editTextDate.text.toString()
-                                userDto.phone = binding.editTextPhone.text.toString()
-
-                                viewModel.updateUser(userDto, bitmap)
+                                val newUser = userDto.copy(
+                                    fName = binding.editTextFirstName.text.toString(),
+                                    lName = binding.editTextLastName.text.toString(),
+                                    mName = binding.editTextMiddleName.text.toString(),
+                                    dataBirth = binding.editTextDate.text.toString(),
+                                    phone = binding.editTextPhone.text.toString(),
+                                )
+                                viewModel.updateUser(newUser, bitmap)
                             }
                         }
 
@@ -147,7 +150,8 @@ class AccountSettings : BaseFragment() {
                                 ) { _, which ->
                                     when (which) {
                                         ACTION_OPEN_CAMERA -> {
-                                            val makePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                                            val makePicture =
+                                                Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                                             pictureActivityResult.launch(makePicture)
                                         }
                                         ACTION_OPEN_GALLERY -> {

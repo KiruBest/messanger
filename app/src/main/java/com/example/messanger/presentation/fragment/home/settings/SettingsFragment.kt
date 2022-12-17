@@ -8,10 +8,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.messanger.R
+import com.example.messanger.core.result.OperationResult
 import com.example.messanger.databinding.FragmentSettingsBinding
-import com.example.messanger.domain.core.AsyncOperationResult
-import com.example.messanger.presentation.core.BaseFragment
-import com.example.messanger.presentation.core.CompanionTitleBuilder
+import com.example.messanger.presentation.fragment.base.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : BaseFragment() {
@@ -41,14 +40,13 @@ class SettingsFragment : BaseFragment() {
         lifecycleScope.launchWhenCreated {
             viewModel.userDtoFlow.collect {
                 when (it) {
-                    is AsyncOperationResult.EmptyState -> {}
-                    is AsyncOperationResult.Failure -> {}
-                    is AsyncOperationResult.Loading -> {}
-                    is AsyncOperationResult.Success -> {
+                    is OperationResult.Empty -> {}
+                    is OperationResult.Error -> {}
+                    is OperationResult.Loading -> {}
+                    is OperationResult.Success -> {
                         val userDto = it.data
 
-                        binding.textViewName.text =
-                            CompanionTitleBuilder(userDto, requireContext()).getTitle()
+                        binding.textViewName.text = userDto.fullName
 
                         Glide.with(requireContext()).load(userDto.avatarUrl)
                             .circleCrop().placeholder(R.drawable.ic_baseline_account_circle)

@@ -8,11 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.messanger.R
+import com.example.messanger.core.result.OperationResult
 import com.example.messanger.databinding.FragmentLoginBinding
-import com.example.messanger.domain.core.AsyncOperationResult
-import com.example.messanger.presentation.core.validateNumber
+import com.example.messanger.presentation.utils.validateNumber
 import com.redmadrobot.inputmask.MaskedTextChangedListener
-import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
@@ -51,21 +50,21 @@ class LoginFragment : Fragment() {
         lifecycleScope.launchWhenCreated {
             viewModel.loginFlow.collect { result ->
                 when (result) {
-                    is AsyncOperationResult.Success -> {
+                    is OperationResult.Success -> {
                         findNavController().navigate(R.id.action_loginFragment_to_otpFragment)
 
                         progressBar.visibility = View.GONE
                         textViewError.visibility = View.GONE
                     }
-                    is AsyncOperationResult.EmptyState -> {
+                    is OperationResult.Empty -> {
                         progressBar.visibility = View.GONE
                         textViewError.visibility = View.GONE
                     }
-                    is AsyncOperationResult.Loading -> {
+                    is OperationResult.Loading -> {
                         progressBar.visibility = View.VISIBLE
                         textViewError.visibility = View.GONE
                     }
-                    is AsyncOperationResult.Failure -> {
+                    is OperationResult.Error -> {
                         progressBar.visibility = View.GONE
                         textViewError.visibility = View.VISIBLE
 

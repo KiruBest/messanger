@@ -1,4 +1,4 @@
-package com.example.messanger.domain.model
+package com.example.messanger.data.model
 
 import com.google.gson.annotations.SerializedName
 

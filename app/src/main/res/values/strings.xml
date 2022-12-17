@@ -28,4 +28,7 @@
 
 
     <string name="write_message">Напишите сообщение</string>
+
+    <!--New Companion-->
+    <string name="newCompanion_emptyCompanionList">Извините, пользователей с такими данными не найдено(</string>
 </resources>
