@@ -1,10 +1,10 @@
 package com.example.messanger.domain.model
 
-data class MessageDto(
+data class Message(
     val id: String,
-    var text: String,
-    var type: String,
+    val text: String,
+    val type: String,
     val from: String,
     val timestamp: Long,
-    var seen: Boolean
+    val seen: Boolean
 )

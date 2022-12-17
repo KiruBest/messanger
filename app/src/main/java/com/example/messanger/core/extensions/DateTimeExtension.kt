@@ -1,8 +1,6 @@
-package com.example.messanger.presentation.core
+package com.example.messanger.presentation.utils
 
 import java.text.SimpleDateFormat
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 fun Long.asDatHourMinute(): String {

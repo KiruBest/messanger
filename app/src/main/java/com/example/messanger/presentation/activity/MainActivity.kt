@@ -1,27 +1,29 @@
 package com.example.messanger.presentation.activity
 
-import android.app.*
-import android.content.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.Icon
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.messanger.R
+import com.example.messanger.core.constants.Constants.BODY
+import com.example.messanger.core.constants.Constants.COMPANION_ID
+import com.example.messanger.core.constants.Constants.PHOTO
+import com.example.messanger.core.constants.Constants.TITLE
 import com.example.messanger.notification.PushService
-import com.example.messanger.presentation.core.Constants.BODY
-import com.example.messanger.presentation.core.Constants.COMPANION_ID
-import com.example.messanger.presentation.core.Constants.PHOTO
-import com.example.messanger.presentation.core.Constants.TITLE
-import java.util.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {

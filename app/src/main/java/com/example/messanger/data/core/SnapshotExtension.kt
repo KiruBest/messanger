@@ -17,10 +17,10 @@ import com.example.messanger.data.core.Constants.USER_M_NAME
 import com.example.messanger.data.core.Constants.USER_PHONE
 import com.example.messanger.data.core.Constants.USER_STATUS
 import com.example.messanger.data.core.Constants.USER_USERNAME
-import com.example.messanger.domain.model.ChatDto
+import com.example.messanger.data.model.ChatDto
+import com.example.messanger.data.model.MessageDto
+import com.example.messanger.data.model.UserDto
 import com.example.messanger.domain.model.ChatItemDto
-import com.example.messanger.domain.model.MessageDto
-import com.example.messanger.domain.model.UserDto
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.getValue
 

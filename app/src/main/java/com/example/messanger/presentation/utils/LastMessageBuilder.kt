@@ -1,7 +1,8 @@
-package com.example.messanger.presentation.core
+package com.example.messanger.presentation.utils
 
 import com.example.messanger.domain.model.ChatItemDto
 
+//todo Удалить эту дичь, вынести в ChatItemDto
 class LastMessageBuilder(private val chatItemDto: ChatItemDto) {
     fun getLastMessageSingleChat(): String {
         var lastMessage = chatItemDto.text

@@ -1,7 +1,11 @@
 package com.example.messanger.data.repository
 
-import android.util.Log
 import com.example.messanger.BuildConfig
+import com.example.messanger.core.exception.DatabaseReadDataException
+import com.example.messanger.core.exception.UserUnAuthException
+import com.example.messanger.core.result.FlowListResult
+import com.example.messanger.core.result.ListResult
+import com.example.messanger.core.result.OperationResult
 import com.example.messanger.data.core.Constants.CHAT_TYPE
 import com.example.messanger.data.core.Constants.MAIN_LIST_REF
 import com.example.messanger.data.core.Constants.MESSAGE_FROM
@@ -18,12 +22,11 @@ import com.example.messanger.data.core.mapToChatDto
 import com.example.messanger.data.core.mapToChatItemDto
 import com.example.messanger.data.core.mapToMessageDto
 import com.example.messanger.data.core.mapToUserDto
-import com.example.messanger.domain.core.AsyncOperationResult
-import com.example.messanger.domain.core.DatabaseReadDataException
-import com.example.messanger.domain.core.UserUnAuthException
-import com.example.messanger.domain.model.*
+import com.example.messanger.data.model.*
+import com.example.messanger.domain.model.ChatItemDto
+import com.example.messanger.domain.model.Message
+import com.example.messanger.domain.model.User
 import com.example.messanger.domain.repository.IMessengerService
-import com.example.messanger.presentation.core.CompanionTitleBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
@@ -31,10 +34,12 @@ import com.google.gson.Gson
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import okhttp3.*
+import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -43,12 +48,12 @@ class MessengerService(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseRef: DatabaseReference
 ) : IMessengerService {
-    private val usersList: MutableList<UserDto> = mutableListOf()
-    private val chatItemList = mutableListOf<ChatItemDto>()
+    private var usersList = mutableListOf<UserDto>()
+    private var chatItemList = mutableListOf<ChatItemDto>()
 
     private val gson = Gson()
 
-    override suspend fun getUsersList(): AsyncOperationResult<List<UserDto>> =
+    override suspend fun getUsersList(): ListResult<User> =
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 if (firebaseAuth.currentUser != null) {
@@ -62,19 +67,19 @@ class MessengerService(
                                     it.mapToUserDto()
                                 }
                                 usersList.addAll(users)
-                                continuation.resume(AsyncOperationResult.Success(users))
+                                continuation.resume(OperationResult.Success(users.map(UserDto::mapToDomain)))
                             }
 
                             override fun onCancelled(error: DatabaseError) {
                                 continuation.resume(
-                                    AsyncOperationResult.Failure(
+                                    OperationResult.Error(
                                         DatabaseReadDataException()
                                     )
                                 )
                             }
                         })
                 } else {
-                    continuation.resume(AsyncOperationResult.Failure(UserUnAuthException()))
+                    continuation.resume(OperationResult.Error(UserUnAuthException()))
                 }
             }
         }
@@ -82,7 +87,7 @@ class MessengerService(
     override suspend fun sendMessage(
         text: String,
         companionID: String
-    ): AsyncOperationResult<List<MessageDto>> = withContext(Dispatchers.IO) {
+    ): ListResult<Message> = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             firebaseAuth.currentUser?.uid?.let { uid ->
                 val refDialogCurrentUser =
@@ -106,66 +111,72 @@ class MessengerService(
                 )
 
                 firebaseRef.updateChildren(mapDialog).addOnFailureListener {
-                    continuation.resume(AsyncOperationResult.Failure(it))
+                    continuation.resume(OperationResult.Error(it))
                 }
 
-                firebaseRef.child(NOTIFICATION_TOKEN_REF).child(companionID).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val token = snapshot.getValue<String>()
+                firebaseRef.child(NOTIFICATION_TOKEN_REF).child(companionID)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val token = snapshot.getValue<String>()
 
-                        firebaseRef.child(USERS_REF).child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                val user = snapshot.mapToUserDto()
+                            firebaseRef.child(USERS_REF).child(uid)
+                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        val user = snapshot.mapToUserDto()
 
-                                val userName = if (user.fName != "" || user.lName != "") {
-                                    "${user.fName} ${user.lName}"
-                                } else {
-                                    user.phone
-                                }
+                                        val userName = if (user.fName != "" || user.lName != "") {
+                                            "${user.fName} ${user.lName}"
+                                        } else {
+                                            user.phone
+                                        }
 
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    token?.let {
-                                        val notificationDto = NotificationDto(
-                                            to = it,
-                                            notificationNotificationDataDto = NotificationDataDto(
-                                                body = text,
-                                                title = userName,
-                                                companionID = uid,
-                                                photo = user.avatarUrl
-                                            )
-                                        )
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            token?.let {
+                                                val notificationDto = NotificationDto(
+                                                    to = it,
+                                                    notificationNotificationDataDto = NotificationDataDto(
+                                                        body = text,
+                                                        title = userName,
+                                                        companionID = uid,
+                                                        photo = user.avatarUrl
+                                                    )
+                                                )
 
-                                        val json = gson.toJson(notificationDto)
+                                                val json = gson.toJson(notificationDto)
 
-                                        val body: RequestBody = RequestBody.create(JSON, json)
+                                                val body: RequestBody =
+                                                    RequestBody.create(JSON, json)
 
-                                        val request = Request.Builder()
-                                            .url(NOTIFICATION_SENDER_URL)
-                                            .addHeader("Authorization", "key=$NOTIFICATION_API_KEY")
-                                            .addHeader("Content-Type", "application/json")
-                                            .post(body)
-                                            .build()
+                                                val request = Request.Builder()
+                                                    .url(NOTIFICATION_SENDER_URL)
+                                                    .addHeader(
+                                                        "Authorization",
+                                                        "key=$NOTIFICATION_API_KEY"
+                                                    )
+                                                    .addHeader("Content-Type", "application/json")
+                                                    .post(body)
+                                                    .build()
 
-                                        val client = OkHttpClient()
-                                        val call: Call = client.newCall(request)
-                                        call.execute()
+                                                val client = OkHttpClient()
+                                                val call: Call = client.newCall(request)
+                                                call.execute()
+                                            }
+                                        }
                                     }
-                                }
-                            }
 
-                            override fun onCancelled(error: DatabaseError) {
-                            }
-                        })
-                    }
+                                    override fun onCancelled(error: DatabaseError) {
+                                    }
+                                })
+                        }
 
-                    override fun onCancelled(error: DatabaseError) {
-                    }
-                })
+                        override fun onCancelled(error: DatabaseError) {
+                        }
+                    })
             }
         }
     }
 
-    override suspend fun getMessagesByCompanionId(companionID: String): Flow<AsyncOperationResult<List<MessageDto>>> =
+    override suspend fun getMessagesByCompanionId(companionID: String): FlowListResult<Message> =
         withContext(Dispatchers.IO) {
             callbackFlow {
                 firebaseAuth.currentUser?.uid?.let { uid ->
@@ -176,11 +187,17 @@ class MessengerService(
                     val callback = object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val messagesList = snapshot.children.map { it.mapToMessageDto() }
-                            if (isActive) trySendBlocking(AsyncOperationResult.Success(messagesList))
+                            if (isActive) trySendBlocking(
+                                OperationResult.Success(
+                                    messagesList.map(
+                                        MessageDto::mapToDomain
+                                    )
+                                )
+                            )
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            trySendBlocking(AsyncOperationResult.Failure(DatabaseReadDataException()))
+                            trySendBlocking(OperationResult.Error(DatabaseReadDataException()))
                         }
                     }
 
@@ -193,42 +210,47 @@ class MessengerService(
             }
         }
 
-    override suspend fun getExistsChats(): Flow<AsyncOperationResult<List<ChatItemDto>>> =
+    override suspend fun getExistsChats(): FlowListResult<ChatItemDto> =
         withContext(Dispatchers.IO) {
             callbackFlow {
                 firebaseAuth.currentUser?.uid?.let { uid ->
-                    if (chatItemList.isNotEmpty()) trySendBlocking(
-                        AsyncOperationResult.Success(
-                            chatItemList
-                        )
-                    )
+                    val copiedChatItemList = chatItemList.toMutableList()
 
-                    val callbackLastMessage = object :
-                        ValueEventListener {
+                    if (copiedChatItemList.isNotEmpty()) {
+                        trySendBlocking(OperationResult.Success(copiedChatItemList))
+                    }
+
+
+                    val callbackLastMessage = object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             try {
-                                val chatItemDto = chatItemList.find { it.userID == snapshot.key }
-                                val message: ChatItemDto = snapshot.children.map { it.mapToChatItemDto() }.last()
+                                val chatItemDtoId =
+                                    copiedChatItemList.indexOfFirst { it.userID == snapshot.key }
+                                val chatItemDto = copiedChatItemList[chatItemDtoId]
+                                val message: ChatItemDto =
+                                    snapshot.children.map { it.mapToChatItemDto() }.last()
                                 val messages = snapshot.children.map { it.mapToChatItemDto() }
 
-                                chatItemDto?.text = message.text
-                                chatItemDto?.messageID = message.messageID
-                                chatItemDto?.from = message.from
-                                chatItemDto?.type = message.type
-                                chatItemDto?.timestamp = message.timestamp
-                                chatItemDto?.seen = message.seen
-                                chatItemDto?.noSeenMessageCount = messages.count { !it.seen }
-
-                                trySendBlocking(AsyncOperationResult.Success(ArrayList(chatItemList)))
-                            } catch (e: Exception) {
-                                trySendBlocking(
-                                    AsyncOperationResult.Failure(e)
+                                copiedChatItemList[chatItemDtoId] = chatItemDto.copy(
+                                    text = message.text,
+                                    messageID = message.messageID,
+                                    from = message.from,
+                                    type = message.type,
+                                    timestamp = message.timestamp,
+                                    seen = message.seen,
+                                    noSeenMessageCount = messages.count { !it.seen }
                                 )
+
+                                chatItemList = copiedChatItemList
+
+                                trySendBlocking(OperationResult.Success(ArrayList(copiedChatItemList)))
+                            } catch (e: Exception) {
+                                trySendBlocking(OperationResult.Error(e))
                             }
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            trySendBlocking(AsyncOperationResult.Failure(DatabaseReadDataException()))
+                            trySendBlocking(OperationResult.Error(DatabaseReadDataException()))
                         }
                     }
 
@@ -236,20 +258,24 @@ class MessengerService(
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val chatItemDto: ChatItemDto = snapshot.mapToChatItemDto()
 
-                            if (!chatItemList.any { it.userID == chatItemDto.userID }) {
-                                chatItemList.add(chatItemDto)
+                            if (!copiedChatItemList.any { it.userID == chatItemDto.userID }) {
+                                copiedChatItemList.add(chatItemDto)
                             }
 
-                            chatItemList.find { it.userID == chatItemDto.userID }?.let { item ->
-                                item.avatarUrl = chatItemDto.avatarUrl
-                                item.fName = chatItemDto.fName
-                                item.lName = chatItemDto.lName
-                                item.username = chatItemDto.username
-                                item.status = chatItemDto.status
-                                item.phone = chatItemDto.phone
+                            val itemId =
+                                copiedChatItemList.indexOfFirst { it.userID == chatItemDto.userID }
+                            copiedChatItemList[itemId] = copiedChatItemList[itemId].copy(
+                                avatarUrl = chatItemDto.avatarUrl,
+                                fName = chatItemDto.fName,
+                                lName = chatItemDto.lName,
+                                username = chatItemDto.username,
+                                status = chatItemDto.status,
+                                phone = chatItemDto.phone,
+                            )
 
-                                trySendBlocking(AsyncOperationResult.Success(ArrayList(chatItemList)))
-                            }
+                            chatItemList = copiedChatItemList
+
+                            trySendBlocking(OperationResult.Success(ArrayList(copiedChatItemList)))
 
                             val refLastMessage =
                                 firebaseRef.child(MESSAGE_REF).child(uid)
@@ -259,13 +285,14 @@ class MessengerService(
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            trySendBlocking(AsyncOperationResult.Failure(DatabaseReadDataException()))
+                            trySendBlocking(OperationResult.Error(DatabaseReadDataException()))
                         }
                     }
 
                     val callbackChatList = object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            val chatList: List<ChatDto> = snapshot.children.map { it.mapToChatDto() }
+                            val chatList: List<ChatDto> =
+                                snapshot.children.map { it.mapToChatDto() }
 
                             chatList.forEach { chat ->
                                 val refCompanion = firebaseRef.child(USERS_REF).child(chat.id)
@@ -275,7 +302,7 @@ class MessengerService(
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            trySendBlocking(AsyncOperationResult.Failure(DatabaseReadDataException()))
+                            trySendBlocking(OperationResult.Error(DatabaseReadDataException()))
                         }
                     }
 
@@ -286,14 +313,14 @@ class MessengerService(
                     awaitClose {
                         refMainList.removeEventListener(callbackChatList)
                     }
-                } ?: trySendBlocking(AsyncOperationResult.Failure(UserUnAuthException()))
+                } ?: trySendBlocking(OperationResult.Error(UserUnAuthException()))
             }
         }
 
     override suspend fun addChat(
         companionID: String,
         chatType: String
-    ): AsyncOperationResult<Boolean> = withContext(Dispatchers.IO) {
+    ): OperationResult<Boolean> = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine { continuation ->
             firebaseAuth.currentUser?.uid?.let { uid ->
                 val refCurrentUser = "$MAIN_LIST_REF/$uid/$companionID"
@@ -319,39 +346,56 @@ class MessengerService(
         }
     }
 
-    override suspend fun readMessage(companionID: String, messageID: String) {
-        withContext(Dispatchers.IO) {
+    override suspend fun readMessage(
+        companionID: String,
+        messageID: String
+    ): OperationResult<Unit> {
+        return withContext(Dispatchers.IO) {
             firebaseAuth.currentUser?.uid?.let { userID ->
                 firebaseRef.child(MESSAGE_REF).child(userID).child(companionID).child(messageID)
                     .updateChildren(mapOf(MESSAGE_SEEN to true))
-            }
+                //todo [Backlog] Дичь, вспомнить че к чему, сделать норм
+                OperationResult.Success(Unit)
+            } ?: OperationResult.Error(DatabaseReadDataException())
         }
     }
 
-    override suspend fun getCompanionById(companionID: String): AsyncOperationResult<UserDto> = withContext(Dispatchers.IO) {
-        suspendCoroutine { continuation ->
-            firebaseRef.child(USERS_REF).child(companionID).addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val user = snapshot.mapToUserDto()
+    override suspend fun getCompanionById(companionID: String): OperationResult<User> =
+        withContext(Dispatchers.IO) {
+            suspendCoroutine { continuation ->
+                firebaseRef.child(USERS_REF).child(companionID)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val user = snapshot.mapToUserDto()
 
-                    continuation.resume(AsyncOperationResult.Success(user))
-                }
+                            continuation.resume(OperationResult.Success(user.mapToDomain()))
+                        }
 
-                override fun onCancelled(error: DatabaseError) {
-                    continuation.resume(AsyncOperationResult.Failure(DatabaseReadDataException()))
-                }
-            })
-        }
-    }
-
-    override fun searchUser(newText: String?): List<UserDto> {
-        return if (newText != null) {
-            usersList.filter {
-                it.fName.contains(newText, true)
-                        || it.lName.contains(newText, true)
-                        || it.phone.contains(newText, true)
+                        override fun onCancelled(error: DatabaseError) {
+                            continuation.resume(OperationResult.Error(DatabaseReadDataException()))
+                        }
+                    })
             }
-        } else usersList
+        }
+
+    override suspend fun searchUser(newText: String?): ListResult<User> {
+        return withContext(Dispatchers.IO) {
+            val copiedUsersList = usersList.toList()
+            if (newText != null) {
+                val filteredList = copiedUsersList.filter {
+                    it.fName.contains(newText, true)
+                            || it.lName.contains(newText, true)
+                            || it.phone.contains(newText, true)
+                }.map(UserDto::mapToDomain)
+                if (filteredList.isNotEmpty()) {
+                    OperationResult.Success(filteredList)
+                } else {
+                    OperationResult.Empty
+                }
+            } else {
+                OperationResult.Success(copiedUsersList.map(UserDto::mapToDomain))
+            }
+        }
     }
 
     companion object {

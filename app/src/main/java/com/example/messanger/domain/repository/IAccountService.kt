@@ -1,17 +1,17 @@
 package com.example.messanger.domain.repository
 
 import android.graphics.Bitmap
-import com.example.messanger.domain.core.AsyncOperationResult
-import com.example.messanger.domain.core.UserState
-import com.example.messanger.domain.model.UserDto
+import com.example.messanger.core.enumeration.UserState
+import com.example.messanger.core.result.OperationResult
+import com.example.messanger.domain.model.User
 
 interface IAccountService {
-    suspend fun performPhoneAuth(phoneNumber: String): AsyncOperationResult<Boolean>
-    suspend fun sentAuthCode(code: String): AsyncOperationResult<Boolean>
-    suspend fun getCurrentUser(): AsyncOperationResult<UserDto>
-    suspend fun updateUserParams(userDto: UserDto, bitmap: Bitmap? = null): AsyncOperationResult<Boolean>
-    suspend fun updateUserState(state: UserState): AsyncOperationResult<UserDto>
-    suspend fun logOut(): AsyncOperationResult<Boolean>
-    suspend fun setUserAccountStatus(text: String): AsyncOperationResult<String>
+    suspend fun performPhoneAuth(phoneNumber: String): OperationResult<Boolean>
+    suspend fun sentAuthCode(code: String): OperationResult<Boolean>
+    suspend fun getCurrentUser(): OperationResult<User>
+    suspend fun updateUserParams(userDto: User, bitmap: Bitmap? = null): OperationResult<Boolean>
+    suspend fun updateUserState(state: UserState): OperationResult<User>
+    suspend fun logOut(): OperationResult<Boolean>
+    suspend fun setUserAccountStatus(text: String): OperationResult<String>
     fun userAuthCheck(): Boolean
 }

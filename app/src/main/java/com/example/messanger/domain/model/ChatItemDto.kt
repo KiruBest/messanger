@@ -1,22 +1,32 @@
 package com.example.messanger.domain.model
 
+import com.example.messanger.data.model.UserDto
+
 data class ChatItemDto(
-    var messageID: String,
-    var text: String,
-    var type: String,
-    var from: String,
-    var timestamp: Long,
+    val messageID: String,
+    val text: String,
+    val type: String,
+    val from: String,
+    val timestamp: Long,
     val userID: String,
-    var username: String,
-    var fName: String,
-    var mName: String,
-    var lName: String,
-    var status: String,
-    var avatarUrl: String,
-    var phone: String,
-    var seen: Boolean,
-    var noSeenMessageCount: Int,
-    var dataBirth: String
+    val username: String,
+    val fName: String,
+    val mName: String,
+    val lName: String,
+    val status: String,
+    val avatarUrl: String,
+    val phone: String,
+    val seen: Boolean,
+    val noSeenMessageCount: Int,
+    val dataBirth: String
 ) {
-    fun mapToUserDto() = UserDto(userID, username, fName,mName, lName, status, avatarUrl, phone,dataBirth)
+    fun mapToUserDto() =
+        UserDto(userID, username, fName, mName, lName, status, avatarUrl, phone, dataBirth)
+
+    val userFullName
+        get() = if (fName.isNotBlank() || lName.isNotBlank()) {
+            "$fName $lName"
+        } else {
+            phone
+        }
 }

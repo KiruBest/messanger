@@ -2,13 +2,10 @@ package com.example.messanger.presentation.fragment.home
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,17 +13,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.messanger.R
+import com.example.messanger.core.constants.Constants.COMPANION_ID
+import com.example.messanger.core.constants.Constants.USER_DTO
+import com.example.messanger.core.result.OperationResult
 import com.example.messanger.databinding.FragmentHomeBinding
-import com.example.messanger.domain.core.AsyncOperationResult
-import com.example.messanger.domain.core.UserState
-import com.example.messanger.domain.model.UserDto
-import com.example.messanger.presentation.core.BaseFragment
-import com.example.messanger.presentation.core.Constants
-import com.example.messanger.presentation.core.Constants.COMPANION_ID
-import com.example.messanger.presentation.core.Constants.USER_DTO
-import com.example.messanger.presentation.fragment.authentication.LoginViewModel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import com.example.messanger.presentation.fragment.base.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : BaseFragment() {
@@ -76,8 +67,10 @@ class HomeFragment : BaseFragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.userDtoFlow.collect { value ->
-                when(value) {
-                    is AsyncOperationResult.Success -> {
+                /* todo (в целом полная фигня получилась с таким подходом, можно было сделать проще
+                надо обрабатывать OperationResult во вьюмодели и отдавать готовое флоу(или LiveData)) */
+                when (value) {
+                    is OperationResult.Success -> {
                         viewModel.getChats()
 
                         toolbar.menu.clear()
@@ -86,8 +79,11 @@ class HomeFragment : BaseFragment() {
                         toolbar.setOnMenuItemClickListener {
                             when (it.itemId) {
                                 R.id.accountSettingsMenu -> {
-                                    findNavController().navigate(R.id.action_homeFragment_to_settingsFragment, bundleOf(
-                                        USER_DTO to value.data.id))
+                                    findNavController().navigate(
+                                        R.id.action_homeFragment_to_settingsFragment, bundleOf(
+                                            USER_DTO to value.data.id
+                                        )
+                                    )
                                     true
                                 }
                                 R.id.logOut -> {
@@ -123,9 +119,9 @@ class HomeFragment : BaseFragment() {
 
                         binding.progressBar.visibility = View.GONE
                     }
-                    is AsyncOperationResult.EmptyState -> TODO()
-                    is AsyncOperationResult.Failure -> TODO()
-                    is AsyncOperationResult.Loading -> {
+                    is OperationResult.Empty -> TODO()
+                    is OperationResult.Error -> TODO()
+                    is OperationResult.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                         binding.buttonNewChat.visibility = View.GONE
                     }
@@ -134,11 +130,11 @@ class HomeFragment : BaseFragment() {
         }
 
         viewModel.chatListFlow.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is AsyncOperationResult.EmptyState -> {}
-                is AsyncOperationResult.Failure -> {}
-                is AsyncOperationResult.Loading -> {}
-                is AsyncOperationResult.Success -> {
+            when (result) {
+                is OperationResult.Empty -> {}
+                is OperationResult.Error -> {}
+                is OperationResult.Loading -> {}
+                is OperationResult.Success -> {
                     _adapter.update(result.data)
                 }
             }
@@ -146,11 +142,11 @@ class HomeFragment : BaseFragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.logOutFlow.collect { result ->
-                when(result) {
-                    is AsyncOperationResult.EmptyState -> binding.progressBar.visibility = View.GONE
-                    is AsyncOperationResult.Failure -> {}
-                    is AsyncOperationResult.Loading -> binding.progressBar.visibility = View.VISIBLE
-                    is AsyncOperationResult.Success -> {
+                when (result) {
+                    is OperationResult.Empty -> binding.progressBar.visibility = View.GONE
+                    is OperationResult.Error -> {}
+                    is OperationResult.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is OperationResult.Success -> {
                         binding.progressBar.visibility = View.GONE
 
                         if (result.data) findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
@@ -158,7 +154,5 @@ class HomeFragment : BaseFragment() {
                 }
             }
         }
-
-        viewModel.getCurrentUser()
     }
 }

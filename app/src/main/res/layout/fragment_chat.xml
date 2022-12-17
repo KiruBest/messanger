@@ -111,12 +111,12 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1.5"
-            android:maxHeight="160dp"
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
             android:hint="@string/write_message"
             android:importantForAutofill="no"
             android:inputType="textMultiLine"
+            android:maxHeight="160dp"
             android:paddingHorizontal="16dp"
             android:paddingVertical="16dp"
             android:textColor="@color/aqua_color"
@@ -124,12 +124,12 @@
 
         <ImageButton
             android:id="@+id/imageViewSendMessage"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="8.5"
+            android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/ic_baseline_send_24"
             app:tint="@color/aqua_color" />
     </LinearLayout>

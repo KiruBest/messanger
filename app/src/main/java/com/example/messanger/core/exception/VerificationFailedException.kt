@@ -1,5 +1,3 @@
-package com.example.messanger.domain.core
-
-import java.lang.Exception
+package com.example.messanger.core.exception
 
 class VerificationFailedException(override val message: String?): Exception()

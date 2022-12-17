@@ -8,9 +8,12 @@ import android.graphics.Matrix
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.messanger.domain.core.AsyncOperationResult
-import com.example.messanger.domain.model.UserDto
+import com.example.messanger.core.extensions.mapIfSuccess
+import com.example.messanger.core.result.OperationResult
 import com.example.messanger.domain.repository.IAccountService
+import com.example.messanger.presentation.model.UserUi
+import com.example.messanger.presentation.model.mapToDomain
+import com.example.messanger.presentation.model.mapToUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,16 +21,14 @@ import kotlinx.coroutines.launch
 
 class AccountSettingsViewModel(
     private val accountService: IAccountService
-
-
 ) : ViewModel() {
     private val _userDtoFlow =
-        MutableStateFlow<AsyncOperationResult<UserDto>>(AsyncOperationResult.Loading())
-    val userDtoFlow: StateFlow<AsyncOperationResult<UserDto>> = _userDtoFlow.asStateFlow()
+        MutableStateFlow<OperationResult<UserUi>>(OperationResult.Loading)
+    val userDtoFlow: StateFlow<OperationResult<UserUi>> = _userDtoFlow.asStateFlow()
 
-    fun updateUser(userDto: UserDto, bitmap: Bitmap?) {
+    fun updateUser(userDto: UserUi, bitmap: Bitmap?) {
         viewModelScope.launch {
-            accountService.updateUserParams(userDto, bitmap)
+            accountService.updateUserParams(userDto.mapToDomain(), bitmap)
         }
     }
 
@@ -80,7 +81,9 @@ class AccountSettingsViewModel(
 
     fun getCurrentUser() {
         viewModelScope.launch {
-            val result = accountService.getCurrentUser()
+            val result = accountService.getCurrentUser().mapIfSuccess {
+                OperationResult.Success(it.mapToUi())
+            }
             _userDtoFlow.tryEmit(result)
         }
     }

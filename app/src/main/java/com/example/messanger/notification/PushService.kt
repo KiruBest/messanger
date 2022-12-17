@@ -2,13 +2,12 @@ package com.example.messanger.notification
 
 import android.content.Intent
 import android.util.Log
-import com.example.messanger.presentation.core.Constants.BODY
-import com.example.messanger.presentation.core.Constants.COMPANION_ID
-import com.example.messanger.presentation.core.Constants.PHOTO
-import com.example.messanger.presentation.core.Constants.TITLE
+import com.example.messanger.core.constants.Constants.BODY
+import com.example.messanger.core.constants.Constants.COMPANION_ID
+import com.example.messanger.core.constants.Constants.PHOTO
+import com.example.messanger.core.constants.Constants.TITLE
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.firebase.messaging.ktx.remoteMessage
 
 class PushService: FirebaseMessagingService() {
     override fun onNewToken(token: String) {
