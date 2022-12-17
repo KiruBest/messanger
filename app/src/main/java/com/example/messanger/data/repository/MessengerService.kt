@@ -66,7 +66,7 @@ class MessengerService(
                                 }.map {
                                     it.mapToUserDto()
                                 }
-                                usersList.addAll(users)
+                                usersList = users.toMutableList()
                                 continuation.resume(OperationResult.Success(users.map(UserDto::mapToDomain)))
                             }
 
