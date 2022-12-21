@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GazpromMessenger</string>
+    <string name="app_name">Messenger</string>
     <string name="login_fragment_login">+7-(999)–999–99–99</string>
     <string name="welcome_fragment_login">Рады Вас видеть!</string>
     <string name="number_fragment_login">Введите номер телефона для \n регистрации/входа</string>
@@ -9,6 +9,7 @@
     <string name="auth_fragment_otp">На ваш номер телефона был \n отправлен код аутентификации</string>
     <string name="resend_fragment_otp">Не получили код?</string>
     <string name="resend_bt_fragment_otp">Отправить \n снова</string>
+    <string name="error_code_fragment_otp">Неверный код</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">account</string>

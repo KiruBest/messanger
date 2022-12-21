@@ -14,10 +14,12 @@ import com.example.messanger.domain.repository.IAccountService
 import com.example.messanger.domain.repository.IMessengerService
 import com.example.messanger.presentation.model.UserUi
 import com.example.messanger.presentation.model.mapToUi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeViewModel(
     private val accountService: IAccountService,

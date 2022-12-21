@@ -19,6 +19,14 @@ class OtpFragment : Fragment() {
 
     private lateinit var binding: FragmentOtpBinding
     private val viewModel: LoginViewModel by viewModel()
+    private  val timer = object : CountDownTimer(60000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            binding.textViewTimer.text = (millisUntilFinished / 1000).toString()
+        }
+        override fun onFinish() {
+            binding.textViewTimer.text = getString(R.string.resend_bt_fragment_otp)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,7 +75,7 @@ class OtpFragment : Fragment() {
                     is OperationResult.Error -> {
                         binding.pinViewOTP.text?.clear()
 
-                        textViewError.text = "Неверный код"
+                        textViewError.text = getString(R.string.error_code_fragment_otp)
 
                         progressBar.visibility = View.GONE
                         textViewError.visibility = View.VISIBLE
@@ -76,16 +84,13 @@ class OtpFragment : Fragment() {
             }
         }
 
-        object : CountDownTimer(60000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                binding.textViewTimer.text = (millisUntilFinished / 1000).toString()
-            }
-            override fun onFinish() {
-                binding.textViewTimer.text = "Код отправлен повторно!"
-            }
-        }.start()
 
+        timer.start()
+    }
 
+    override fun onDestroyView() {
+        timer.cancel()
+        super.onDestroyView()
     }
 
 }

@@ -11,8 +11,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -137,6 +139,15 @@ class AccountSettings : BaseFragment() {
                             }
                         }
 
+
+                        lifecycleScope.launchWhenCreated {
+                            viewModel.isSuccessFlow.collect{
+                                if (it != null ){
+                                    Toast.makeText(requireContext(),"Успешно!",Toast.LENGTH_SHORT).show()
+                                    findNavController().popBackStack(R.id.accountSettings, true)
+                                }
+                            }
+                        }
 
                         binding.buttonChangePhoto.setOnClickListener {
                             MaterialAlertDialogBuilder(requireContext())
