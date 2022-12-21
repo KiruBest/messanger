@@ -55,7 +55,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.AccountSettingsToolbarTitle"
-                    android:textColor="@color/aqua_color"
+                    android:textColor="@color/brown_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/companionAvatar"
                     app:layout_constraintTop_toTopOf="parent"
@@ -119,8 +119,8 @@
             android:maxHeight="160dp"
             android:paddingHorizontal="16dp"
             android:paddingVertical="16dp"
-            android:textColor="@color/aqua_color"
-            android:textColorHint="@color/aqua_color" />
+            android:textColor="@color/brown_color"
+            android:textColorHint="@color/brown_color" />
 
         <ImageButton
             android:id="@+id/imageViewSendMessage"
@@ -131,7 +131,7 @@
             android:layout_weight="8.5"
             android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/ic_baseline_send_24"
-            app:tint="@color/aqua_color" />
+            app:tint="@color/brown_color" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

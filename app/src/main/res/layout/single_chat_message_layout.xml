@@ -66,7 +66,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/chat_your_item_background"
-        android:backgroundTint="@color/blue_chat"
+        android:backgroundTint="@color/brown_chat"
         android:longClickable="true"
         android:visibility="gone"
         tools:visibility="visible">

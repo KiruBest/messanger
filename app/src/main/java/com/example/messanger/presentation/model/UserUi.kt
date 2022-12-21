@@ -1,6 +1,7 @@
 package com.example.messanger.presentation.model
 
 import com.example.messanger.domain.model.User
+import java.io.Serializable
 
 data class UserUi(
     val id: String,
@@ -12,7 +13,7 @@ data class UserUi(
     val avatarUrl: String,
     val dataBirth: String,
     val phone: String
-) {
+) : Serializable {
     val fullName
         get() = if (fName.isNotBlank() || lName.isNotBlank()) {
             "$fName $lName"

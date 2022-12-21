@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/aqua_color"
+    android:background="@color/purple_color"
     tools:context=".presentation.fragment.authentication.OtpFragment">
 
     <include layout="@layout/logo_layout" />
@@ -25,7 +25,7 @@
         android:id="@+id/textViewOTP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="35dp"
         android:gravity="center_horizontal"
         android:text="@string/auth_fragment_otp"
         android:textAppearance="@style/TextAppearance.AppCompat.AuthenticationTextView"
@@ -77,10 +77,8 @@
 
     <Button
         android:id="@+id/buttonLogOTP"
-        style="@style/ShapeAppearanceOverlay.Material3.Button.BlackButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        style="@style/ShapeAppearanceOverlay.Material3.Button.WhiteButton"
+        android:layout_marginTop="30dp"
         android:text="@string/continue_fragment_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,7 +93,7 @@
         android:fontFamily="@font/roboto_condensed_italic"
         android:letterSpacing="0.05"
         android:text="@string/resend_fragment_otp"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="17dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogOTP" />
@@ -108,7 +106,7 @@
         android:layout_marginEnd="72dp"
         android:fontFamily="@font/roboto_condensed_italic"
         android:letterSpacing="0.05"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="17dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogOTP"

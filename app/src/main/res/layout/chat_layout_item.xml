@@ -38,7 +38,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body"
-        android:textColor="@color/aqua_color"
+        android:textColor="@color/brown_color"
         app:layout_constraintEnd_toStartOf="@+id/time"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/userAvatar"
@@ -84,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time"
         app:layout_constraintVertical_bias="0.0"
-        android:background="@color/aqua_color"
+        android:background="@color/brown_color"
         android:textColor="@color/white"
         tools:text="5"
         tools:visibility="visible" />

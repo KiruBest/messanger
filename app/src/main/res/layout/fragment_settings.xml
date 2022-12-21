@@ -18,7 +18,7 @@
         app:navigationIcon="?homeAsUpIndicator"
         app:title="@string/settings_fragment_settings"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.AccountSettingsToolbarTitle"
-        app:titleTextColor="@color/aqua_color" />
+        app:titleTextColor="@color/brown_color" />
 
     <ImageView
         android:id="@+id/imageViewSettings"

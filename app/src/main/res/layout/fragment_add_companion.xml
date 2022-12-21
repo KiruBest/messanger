@@ -17,7 +17,7 @@
         app:navigationIcon="?homeAsUpIndicator"
         app:title="Добавить собеседника"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.AccountSettingsToolbarTitle"
-        app:titleTextColor="@color/aqua_color" />
+        app:titleTextColor="@color/brown_color" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewUsers"
@@ -42,7 +42,7 @@
         android:gravity="center"
         android:text="@string/newCompanion_emptyCompanionList"
         android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
-        android:textColor="@color/blue_chat"
+        android:textColor="@color/brown_chat"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

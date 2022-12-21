@@ -123,7 +123,7 @@ class ChatFragment : BaseFragment() {
             }
         }
 
-        /* todo Полная дичь конечно, надо в конструктор ViewModel инжектить через DI нужные параметры
+        /* todo  надо в конструктор ViewModel инжектить через DI нужные параметры
         и вызывать в init блоке viewModel */
         viewModel.getCompanionById(companionID)
         viewModel.getMessages(companionID)

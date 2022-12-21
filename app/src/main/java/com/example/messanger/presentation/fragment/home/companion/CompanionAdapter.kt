@@ -11,7 +11,7 @@ import com.example.messanger.presentation.model.UserUi
 
 class CompanionAdapter(
     private var usersList: List<UserUi>,
-    private val onItemClickListener: (userDto: UserDto) -> Unit
+    private val onItemClickListener: (userUi: UserUi) -> Unit
 ): RecyclerView.Adapter<CompanionViewHolder>(), View.OnClickListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompanionViewHolder {
@@ -38,6 +38,6 @@ class CompanionAdapter(
     }
 
     override fun onClick(v: View?) {
-        onItemClickListener.invoke(v?.tag as UserDto)
+        onItemClickListener.invoke(v?.tag as UserUi)
     }
 }
