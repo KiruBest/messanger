@@ -18,6 +18,7 @@ import com.example.messanger.core.constants.Constants.COMPANION_ID
 import com.example.messanger.core.result.OperationResult
 import com.example.messanger.databinding.FragmentChatBinding
 import com.example.messanger.presentation.fragment.base.BaseFragment
+import com.example.messanger.presentation.fragment.chat.list.SingleChatAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ChatFragment : BaseFragment() {
@@ -45,11 +46,11 @@ class ChatFragment : BaseFragment() {
             findNavController().popBackStack(R.id.chatFragment, true)
         }
 
-        companionID = requireArguments().getString(COMPANION_ID)!!
+        companionID = requireArguments().getString(COMPANION_ID).orEmpty()
 
         val recyclerView = binding.recyclerViewMessages
 
-        singleChatAdapter = SingleChatAdapter(emptyList(), companionID)
+        singleChatAdapter = SingleChatAdapter(companionID)
         val linearLayoutManager = LinearLayoutManager(requireContext())
 
         linearLayoutManager.reverseLayout

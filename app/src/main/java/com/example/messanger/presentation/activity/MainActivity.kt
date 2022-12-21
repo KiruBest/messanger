@@ -11,6 +11,7 @@ import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.os.bundleOf
@@ -23,11 +24,13 @@ import com.example.messanger.core.constants.Constants.BODY
 import com.example.messanger.core.constants.Constants.COMPANION_ID
 import com.example.messanger.core.constants.Constants.PHOTO
 import com.example.messanger.core.constants.Constants.TITLE
+import com.example.messanger.core.enumeration.UserState
 import com.example.messanger.notification.PushService
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
+    private val viewModel by viewModels<MainActivityViewModel>()
     private lateinit var pushBroadcastReceiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,16 +98,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        viewModel.updateUserState(UserState.ONLINE)
 
         intent.extras?.getBundle(NOTIFICATION_EXTRAS)?.let { bundle ->
             val notificationID = bundle.getInt(NOTIFICATION_ID)
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
             val navController = navHostFragment.navController
-            navController.navigate(R.id.chatFragment, bundleOf(COMPANION_ID to bundle.getString(COMPANION_ID)))
+            navController.navigate(
+                R.id.chatFragment,
+                bundleOf(COMPANION_ID to bundle.getString(COMPANION_ID))
+            )
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel(notificationID)
         }
+    }
+
+    override fun onStop() {
+        viewModel.updateUserState(UserState.OFFLINE)
+        super.onStop()
     }
 
     companion object {

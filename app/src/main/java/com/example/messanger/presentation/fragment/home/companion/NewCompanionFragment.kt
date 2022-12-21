@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.messanger.R
-import com.example.messanger.core.constants.Constants.USER_DTO
+import com.example.messanger.core.constants.Constants.COMPANION_ID
 import com.example.messanger.core.result.OperationResult
 import com.example.messanger.databinding.FragmentAddCompanionBinding
 import com.example.messanger.presentation.fragment.base.BaseFragment
@@ -56,8 +56,8 @@ class NewCompanionFragment : BaseFragment() {
             }
         })
 
-        companionAdapter = CompanionAdapter(emptyList()) { userDto ->
-            val bundle = bundleOf(USER_DTO to userDto)
+        companionAdapter = CompanionAdapter { userDto ->
+            val bundle = bundleOf(COMPANION_ID to userDto.id)
             findNavController().navigate(R.id.action_addCompanionFragment_to_chatFragment, bundle)
         }
 

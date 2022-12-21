@@ -1,4 +1,4 @@
-package com.example.messanger.presentation.fragment.chat
+package com.example.messanger.presentation.fragment.chat.list
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.messanger.presentation.model.MessageUi
