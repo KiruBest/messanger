@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -129,6 +130,15 @@ class AccountSettings : BaseFragment<AccountSettingsViewModel, FragmentAccountSe
                             }
                         }
 
+
+                        lifecycleScope.launchWhenCreated {
+                            viewModel.isSuccessFlow.collect{
+                                if (it != null ){
+                                    Toast.makeText(requireContext(),"Успешно!",Toast.LENGTH_SHORT).show()
+                                    findNavController().popBackStack(R.id.accountSettings, true)
+                                }
+                            }
+                        }
 
                         binding.buttonChangePhoto.setOnClickListener {
                             MaterialAlertDialogBuilder(requireContext())

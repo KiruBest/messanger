@@ -35,55 +35,59 @@ class MainActivity : AppCompatActivity() {
     private val pushBroadcastReceiver: BroadcastReceiver by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                val extras = intent?.extras
-                val title = extras?.getString(TITLE)
-                val body = extras?.getString(BODY)
-                val photo = extras?.getString(PHOTO)
-                val notificationID = Random.nextInt()
+                try {
+                    val extras = intent?.extras
+                    val title = extras?.getString(TITLE)
+                    val body = extras?.getString(BODY)
+                    val photo = extras?.getString(PHOTO)
+                    val notificationID = Random.nextInt()
 
-                extras?.putInt(NOTIFICATION_ID, notificationID)
+                    extras?.putInt(NOTIFICATION_ID, notificationID)
 
-                val resultIntent = Intent(context, MainActivity::class.java)
+                    val resultIntent = Intent(context, MainActivity::class.java)
 
-                resultIntent.putExtra(NOTIFICATION_EXTRAS, extras)
+                    resultIntent.putExtra(NOTIFICATION_EXTRAS, extras)
 
-                val resultPendingIntent = PendingIntent.getActivity(
-                    context, 0, resultIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
+                    val resultPendingIntent = PendingIntent.getActivity(
+                        context, 0, resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
 
-                val notification = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setSmallIcon(R.drawable.ic_gazprom)
-                    .setContentIntent(resultPendingIntent)
+                    val notification = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setSmallIcon(R.drawable.ic_logo_main)
+                        .setContentIntent(resultPendingIntent)
 
-                Glide.with(context!!).asBitmap().circleCrop().placeholder(R.drawable.ic_gazprom)
+                    Glide.with(context!!).asBitmap().circleCrop().placeholder(R.drawable.ic_logo_main)
                     .load(photo)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
-                            notification.setLargeIcon(resource)
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(
+                                resource: Bitmap,
+                                transition: Transition<in Bitmap>?
+                            ) {
+                                notification.setLargeIcon(resource)
 
-                            with(NotificationManagerCompat.from(context)) {
-                                notify(notificationID, notification.build())
+                                with(NotificationManagerCompat.from(context)) {
+                                    notify(notificationID, notification.build())
+                                }
                             }
-                        }
 
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                        }
-                    })
+                            override fun onLoadCleared(placeholder: Drawable?) {
+                            }
+                        })
 
-                val name = NOTIFICATION_CHANNEL_ID
-                val importance = NotificationManager.IMPORTANCE_DEFAULT
-                val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance)
+                    val name = NOTIFICATION_CHANNEL_ID
+                    val importance = NotificationManager.IMPORTANCE_DEFAULT
+                    val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance)
 
-                // Register the channel with the system
-                val notificationManager: NotificationManager =
-                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.createNotificationChannel(channel)
+                    // Register the channel with the system
+                    val notificationManager: NotificationManager =
+                        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    notificationManager.createNotificationChannel(channel)
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
             }
         }
     }

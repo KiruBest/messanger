@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -101,8 +102,11 @@
         <Button
             android:id="@+id/buttonSave"
             style="@style/ShapeAppearanceOverlay.Material3.Button.BrownButton"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintVertical_bias="1.0"
+            android:layout_marginBottom="40dp"
             android:text="@string/save_fragment_account_set"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />

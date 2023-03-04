@@ -23,6 +23,9 @@ class AccountSettingsViewModel(
     private val _userDtoFlow = MutableStateFlow<OperationResult<UserUi>>(OperationResult.Loading)
     val userDtoFlow: StateFlow<OperationResult<UserUi>> = _userDtoFlow.asStateFlow()
 
+    private val _isSuccessFlow: MutableStateFlow<Unit?> = MutableStateFlow(null)
+    val isSuccessFlow: StateFlow<Unit?> = _isSuccessFlow.asStateFlow()
+
     init {
         getCurrentUser()
     }
@@ -31,6 +34,7 @@ class AccountSettingsViewModel(
         viewModelScope.launch {
             accountService.updateUserParams(userDto, bitmap)
         }
+        _isSuccessFlow.tryEmit(Unit)
     }
 
     fun getBitmap(data: Intent, contentResolver: ContentResolver): Bitmap? {
