@@ -23,10 +23,8 @@ import com.example.messanger.data.core.mapToChatItemDto
 import com.example.messanger.data.core.mapToMessageDto
 import com.example.messanger.data.core.mapToUserDto
 import com.example.messanger.data.model.*
-import com.example.messanger.domain.model.ChatItemDto
-import com.example.messanger.domain.model.Message
-import com.example.messanger.domain.model.User
-import com.example.messanger.domain.repository.IMessengerService
+import com.example.messanger.presentation.model.MessageUi
+import com.example.messanger.presentation.model.UserUi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
@@ -34,6 +32,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -46,14 +45,13 @@ import kotlin.coroutines.suspendCoroutine
 
 class MessengerService(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseRef: DatabaseReference
+    private val firebaseRef: DatabaseReference,
+    private val gson: Gson
 ) : IMessengerService {
-    private var usersList = mutableListOf<UserDto>()
-    private var chatItemList = mutableListOf<ChatItemDto>()
+    private val usersList = MutableStateFlow<List<UserDto>>(emptyList())
+    private val chatItemList = MutableStateFlow<List<ChatItemDto>>(emptyList())
 
-    private val gson = Gson()
-
-    override suspend fun getUsersList(): ListResult<User> =
+    override suspend fun getUsersList(): ListResult<UserUi> =
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 if (firebaseAuth.currentUser != null) {
@@ -66,8 +64,8 @@ class MessengerService(
                                 }.map {
                                     it.mapToUserDto()
                                 }
-                                usersList = users.toMutableList()
-                                continuation.resume(OperationResult.Success(users.map(UserDto::mapToDomain)))
+                                usersList.value = users
+                                continuation.resume(OperationResult.Success(users.map(UserDto::mapToUi)))
                             }
 
                             override fun onCancelled(error: DatabaseError) {
@@ -87,7 +85,7 @@ class MessengerService(
     override suspend fun sendMessage(
         text: String,
         companionID: String
-    ): ListResult<Message> = withContext(Dispatchers.IO) {
+    ): ListResult<MessageUi> = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             firebaseAuth.currentUser?.uid?.let { uid ->
                 val refDialogCurrentUser =
@@ -176,7 +174,7 @@ class MessengerService(
         }
     }
 
-    override suspend fun getMessagesByCompanionId(companionID: String): FlowListResult<Message> =
+    override suspend fun getMessagesByCompanionId(companionID: String): FlowListResult<MessageUi> =
         withContext(Dispatchers.IO) {
             callbackFlow {
                 firebaseAuth.currentUser?.uid?.let { uid ->
@@ -190,7 +188,7 @@ class MessengerService(
                             if (isActive) trySendBlocking(
                                 OperationResult.Success(
                                     messagesList.map(
-                                        MessageDto::mapToDomain
+                                        MessageDto::mapToUi
                                     )
                                 )
                             )
@@ -214,7 +212,7 @@ class MessengerService(
         withContext(Dispatchers.IO) {
             callbackFlow {
                 firebaseAuth.currentUser?.uid?.let { uid ->
-                    val copiedChatItemList = chatItemList.toMutableList()
+                    val copiedChatItemList = chatItemList.value.toMutableList()
 
                     if (copiedChatItemList.isNotEmpty()) {
                         trySendBlocking(OperationResult.Success(copiedChatItemList))
@@ -241,9 +239,9 @@ class MessengerService(
                                     noSeenMessageCount = messages.count { !it.seen }
                                 )
 
-                                chatItemList = copiedChatItemList
+                                chatItemList.value = copiedChatItemList
 
-                                trySendBlocking(OperationResult.Success(ArrayList(copiedChatItemList)))
+                                trySendBlocking(OperationResult.Success(copiedChatItemList.toList()))
                             } catch (e: Exception) {
                                 trySendBlocking(OperationResult.Error(e))
                             }
@@ -273,7 +271,7 @@ class MessengerService(
                                 phone = chatItemDto.phone,
                             )
 
-                            chatItemList = copiedChatItemList
+                            chatItemList.value = copiedChatItemList
 
                             trySendBlocking(OperationResult.Success(ArrayList(copiedChatItemList)))
 
@@ -360,7 +358,7 @@ class MessengerService(
         }
     }
 
-    override suspend fun getCompanionById(companionID: String): OperationResult<User> =
+    override suspend fun getCompanionById(companionID: String): OperationResult<UserUi> =
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 firebaseRef.child(USERS_REF).child(companionID)
@@ -368,7 +366,7 @@ class MessengerService(
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val user = snapshot.mapToUserDto()
 
-                            continuation.resume(OperationResult.Success(user.mapToDomain()))
+                            continuation.resume(OperationResult.Success(user.mapToUi()))
                         }
 
                         override fun onCancelled(error: DatabaseError) {
@@ -378,22 +376,22 @@ class MessengerService(
             }
         }
 
-    override suspend fun searchUser(newText: String?): ListResult<User> {
+    override suspend fun searchUser(newText: String?): ListResult<UserUi> {
         return withContext(Dispatchers.IO) {
-            val copiedUsersList = usersList.toList()
+            val copiedUsersList = usersList.value
             if (newText != null) {
                 val filteredList = copiedUsersList.filter {
                     it.fName.contains(newText, true)
                             || it.lName.contains(newText, true)
                             || it.phone.contains(newText, true)
-                }.map(UserDto::mapToDomain)
+                }.map(UserDto::mapToUi)
                 if (filteredList.isNotEmpty()) {
                     OperationResult.Success(filteredList)
                 } else {
                     OperationResult.Empty
                 }
             } else {
-                OperationResult.Success(copiedUsersList.map(UserDto::mapToDomain))
+                OperationResult.Success(copiedUsersList.map(UserDto::mapToUi))
             }
         }
     }
@@ -403,4 +401,15 @@ class MessengerService(
         private const val NOTIFICATION_SENDER_URL = "https://fcm.googleapis.com/fcm/send"
         private const val NOTIFICATION_API_KEY = BuildConfig.NOTIFICATION_API_KEY
     }
+}
+
+interface IMessengerService {
+    suspend fun getUsersList(): ListResult<UserUi>
+    suspend fun sendMessage(text: String, companionID: String): ListResult<MessageUi>
+    suspend fun getMessagesByCompanionId(companionID: String): FlowListResult<MessageUi>
+    suspend fun getExistsChats(): FlowListResult<ChatItemDto>
+    suspend fun addChat(companionID: String, chatType: String): OperationResult<Boolean>
+    suspend fun readMessage(companionID: String, messageID: String): OperationResult<Unit>
+    suspend fun getCompanionById(companionID: String): OperationResult<UserUi>
+    suspend fun searchUser(newText: String?): ListResult<UserUi>
 }

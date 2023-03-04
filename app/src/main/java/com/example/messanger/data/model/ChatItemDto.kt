@@ -1,6 +1,4 @@
-package com.example.messanger.domain.model
-
-import com.example.messanger.data.model.UserDto
+package com.example.messanger.data.model
 
 data class ChatItemDto(
     val messageID: String,

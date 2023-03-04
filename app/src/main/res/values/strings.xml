@@ -31,4 +31,9 @@
 
     <!--New Companion-->
     <string name="newCompanion_emptyCompanionList">Извините, пользователей с такими данными не найдено(</string>
+
+    <!--User State-->
+    <string name="userState_online">Онлайн</string>
+    <string name="userState_offline">Был недавно</string>
+    <string name="userState_typing">Печатает…</string>
 </resources>

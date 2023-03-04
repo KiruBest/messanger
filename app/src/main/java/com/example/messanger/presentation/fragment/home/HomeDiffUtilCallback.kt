@@ -1,7 +1,7 @@
 package com.example.messanger.presentation.fragment.home
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.messanger.domain.model.ChatItemDto
+import com.example.messanger.data.model.ChatItemDto
 
 class HomeDiffUtilCallback(
     private val oldList: List<ChatItemDto>,

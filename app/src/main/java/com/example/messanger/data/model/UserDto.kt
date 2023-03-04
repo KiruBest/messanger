@@ -1,6 +1,7 @@
 package com.example.messanger.data.model
 
-import com.example.messanger.domain.model.User
+import com.example.messanger.core.enumeration.UserState
+import com.example.messanger.presentation.model.UserUi
 import java.io.Serializable
 
 data class UserDto(
@@ -15,6 +16,18 @@ data class UserDto(
     val phone: String
 ) : Serializable
 
-fun UserDto.mapToDomain() = User(
-    id, username, fName, mName, lName, status, avatarUrl, dataBirth, phone
-)
+fun UserDto.mapToUi(): UserUi {
+    val userState = UserState.mapToUserState(status)
+
+    return UserUi(
+        id = id,
+        username = username,
+        fName = fName,
+        mName = mName,
+        lName = lName,
+        status = userState,
+        avatarUrl = avatarUrl,
+        dataBirth = dataBirth,
+        phone = phone
+    )
+}

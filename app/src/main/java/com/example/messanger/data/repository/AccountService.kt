@@ -14,9 +14,8 @@ import com.example.messanger.data.core.Constants.USER_PHONE
 import com.example.messanger.data.core.Constants.USER_STATUS
 import com.example.messanger.data.core.Constants.USER_TEXT_STATUS
 import com.example.messanger.data.core.mapToUserDto
-import com.example.messanger.data.model.mapToDomain
-import com.example.messanger.domain.model.User
-import com.example.messanger.domain.repository.IAccountService
+import com.example.messanger.data.model.mapToUi
+import com.example.messanger.presentation.model.UserUi
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -33,6 +32,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -63,7 +63,6 @@ class AccountService(
                     verificationId: String,
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
-                    super.onCodeSent(verificationId, token)
                     Log.d("codeSent", "codeSent:$verificationId")
 
                     storedVerificationId = verificationId
@@ -86,8 +85,9 @@ class AccountService(
     override suspend fun sentAuthCode(code: String): OperationResult<Boolean> =
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
-                val credential =
-                    storedVerificationId?.let { PhoneAuthProvider.getCredential(it, code) }
+                val credential = storedVerificationId?.let {
+                    PhoneAuthProvider.getCredential(it, code)
+                }
                 credential?.let {
                     firebaseAuth.signInWithCredential(it).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
@@ -96,7 +96,7 @@ class AccountService(
 
                                 refToUser.child(USER_ID).setValue(user.uid)
                                 refToUser.child(USER_PHONE).setValue(user.phoneNumber)
-                                refToUser.child(USER_STATUS).setValue(UserState.ONLINE.state)
+                                refToUser.child(USER_STATUS).setValue(UserState.ONLINE.status)
 
                                 firebaseMessaging.token.addOnCompleteListener { tokenTask ->
                                     if (tokenTask.isSuccessful) {
@@ -136,7 +136,7 @@ class AccountService(
         suspendCoroutine { continuation ->
             firebaseAuth.currentUser?.uid?.let {
                 firebaseReference.child(USERS_REF).child(it).child(USER_STATUS)
-                    .setValue(UserState.OFFLINE.state).addOnCompleteListener { task ->
+                    .setValue(UserState.OFFLINE.status).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             firebaseAuth.signOut()
                             continuation.resume(OperationResult.Success(firebaseAuth.currentUser == null))
@@ -155,38 +155,40 @@ class AccountService(
     override suspend fun setUserAccountStatus(text: String): OperationResult<String> =
         withContext(Dispatchers.IO) {
             suspendCancellableCoroutine { continuation ->
-                firebaseAuth.currentUser?.uid?.let {
+                checkUserAuthAndExecute(continuation) {
                     firebaseReference.child(USERS_REF).child(it)
                         .updateChildren(mapOf(USER_TEXT_STATUS to text))
-                } ?: continuation.resume(OperationResult.Error(UserUnAuthException()))
+                }
             }
         }
 
-    override suspend fun getCurrentUser(): OperationResult<User> =
+    override suspend fun getCurrentUser(): OperationResult<UserUi> =
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
-                firebaseAuth.currentUser?.uid?.let { userId ->
-                    firebaseReference.child(USERS_REF).child(userId)
-                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                val userDto = snapshot.mapToUserDto()
-                                continuation.resume(OperationResult.Success(userDto.mapToDomain()))
-                            }
+                val getUserCallback = object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val userDto = snapshot.mapToUserDto()
+                        continuation.resume(OperationResult.Success(userDto.mapToUi()))
+                    }
 
-                            override fun onCancelled(error: DatabaseError) {
-                                continuation.resume(
-                                    OperationResult.Error(
-                                        DatabaseReadDataException()
-                                    )
-                                )
-                            }
-                        })
-                } ?: continuation.resume(OperationResult.Error(UserUnAuthException()))
+                    override fun onCancelled(error: DatabaseError) {
+                        continuation.resume(
+                            OperationResult.Error(
+                                DatabaseReadDataException()
+                            )
+                        )
+                    }
+                }
+
+                checkUserAuthAndExecute(continuation) { userId ->
+                    firebaseReference.child(USERS_REF).child(userId)
+                        .addListenerForSingleValueEvent(getUserCallback)
+                }
             }
         }
 
     override suspend fun updateUserParams(
-        userDto: User,
+        userDto: UserUi,
         bitmap: Bitmap?
     ): OperationResult<Boolean> =
         withContext(Dispatchers.IO) {
@@ -225,13 +227,33 @@ class AccountService(
             }
         }
 
-    override suspend fun updateUserState(state: UserState): OperationResult<User> =
+    override suspend fun updateUserState(state: UserState): OperationResult<UserUi> =
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
-                firebaseAuth.currentUser?.uid?.let { userId ->
+                checkUserAuthAndExecute(continuation) { userId ->
                     firebaseReference.child(USERS_REF).child(userId).child(USER_STATUS)
-                        .setValue(state.state)
-                } ?: continuation.resume(OperationResult.Error(UserUnAuthException()))
+                        .setValue(state.status)
+                }
             }
         }
+
+    private inline fun <T> checkUserAuthAndExecute(
+        continuation: Continuation<OperationResult<T>>,
+        block: (String) -> Unit
+    ) {
+        firebaseAuth.currentUser?.uid?.let { userId ->
+            block(userId)
+        } ?: continuation.resume(OperationResult.Error(UserUnAuthException()))
+    }
+}
+
+interface IAccountService {
+    suspend fun performPhoneAuth(phoneNumber: String): OperationResult<Boolean>
+    suspend fun sentAuthCode(code: String): OperationResult<Boolean>
+    suspend fun getCurrentUser(): OperationResult<UserUi>
+    suspend fun updateUserParams(userDto: UserUi, bitmap: Bitmap? = null): OperationResult<Boolean>
+    suspend fun updateUserState(state: UserState): OperationResult<UserUi>
+    suspend fun logOut(): OperationResult<Boolean>
+    suspend fun setUserAccountStatus(text: String): OperationResult<String>
+    fun userAuthCheck(): Boolean
 }

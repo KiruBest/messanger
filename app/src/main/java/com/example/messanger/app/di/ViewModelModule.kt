@@ -9,9 +9,9 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
+    viewModel { MainActivityViewModel(get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { HomeViewModel(get(), get()) }
-    viewModel { ChatViewModel(get()) }
+    viewModel { parameters -> ChatViewModel(companionID = parameters.get(), get()) }
     viewModel { AccountSettingsViewModel(get()) }
-    viewModel { MainActivityViewModel() }
 }

@@ -11,7 +11,6 @@ import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.os.bundleOf
@@ -26,18 +25,15 @@ import com.example.messanger.core.constants.Constants.PHOTO
 import com.example.messanger.core.constants.Constants.TITLE
 import com.example.messanger.core.enumeration.UserState
 import com.example.messanger.notification.PushService
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel by viewModels<MainActivityViewModel>()
-    private lateinit var pushBroadcastReceiver: BroadcastReceiver
+    private val viewModel by viewModel<MainActivityViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        pushBroadcastReceiver = object : BroadcastReceiver() {
+    private val pushBroadcastReceiver: BroadcastReceiver by lazy {
+        object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val extras = intent?.extras
                 val title = extras?.getString(TITLE)
@@ -62,7 +58,8 @@ class MainActivity : AppCompatActivity() {
                     .setSmallIcon(R.drawable.ic_gazprom)
                     .setContentIntent(resultPendingIntent)
 
-                Glide.with(context!!).asBitmap().circleCrop().placeholder(R.drawable.ic_gazprom).load(photo)
+                Glide.with(context!!).asBitmap().circleCrop().placeholder(R.drawable.ic_gazprom)
+                    .load(photo)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(
                             resource: Bitmap,
@@ -89,6 +86,11 @@ class MainActivity : AppCompatActivity() {
                 notificationManager.createNotificationChannel(channel)
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(PushService.PUSH_INTENT_FILTER)

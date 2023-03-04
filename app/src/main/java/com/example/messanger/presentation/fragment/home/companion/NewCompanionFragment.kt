@@ -1,9 +1,7 @@
 package com.example.messanger.presentation.fragment.home.companion
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -18,34 +16,18 @@ import com.example.messanger.presentation.fragment.base.BaseFragment
 import com.example.messanger.presentation.fragment.home.HomeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewCompanionFragment : BaseFragment() {
-
-    //todo Binding тоже можно лучше сделать, с BaseFragment, создавать binding там
-    private lateinit var binding: FragmentAddCompanionBinding
-
+class NewCompanionFragment : BaseFragment<HomeViewModel, FragmentAddCompanionBinding>(
+    layoutId = R.layout.fragment_add_companion,
+    viewBindingInflater = FragmentAddCompanionBinding::inflate
+) {
     //todo Необходимо разделить viewModel, так делать не стоит
-    private val viewModel: HomeViewModel by viewModel()
+    override val viewModel: HomeViewModel by viewModel()
 
     //todo Не использовать lateinit никогда кроме DI, плюс в такой реализации скорее всего утечки памяти
     private lateinit var companionAdapter: CompanionAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentAddCompanionBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val toolbar = binding.toolbar
-
-        val searchView: SearchView = toolbar.menu.findItem(R.id.app_bar_search).actionView as SearchView
-
-        //todo Сто процентов тут утечка))) всегда такие штуки нужно отвязывать в OnDestroyView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+    private val onQueryTextListener by lazy {
+        object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
@@ -54,7 +36,20 @@ class NewCompanionFragment : BaseFragment() {
                 viewModel.filter(newText)
                 return true
             }
-        })
+        }
+    }
+
+    private val searchView: SearchView
+        get() =
+            binding.toolbar.menu.findItem(R.id.app_bar_search).actionView as SearchView
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val toolbar = binding.toolbar
+
+        //todo Сто процентов тут утечка))) всегда такие штуки нужно отвязывать в OnDestroyView
+        searchView.setOnQueryTextListener(onQueryTextListener)
 
         companionAdapter = CompanionAdapter { userDto ->
             val bundle = bundleOf(COMPANION_ID to userDto.id)
@@ -75,7 +70,7 @@ class NewCompanionFragment : BaseFragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.usersListFlow.collect { result ->
-                /* todo (в целом полная фигня получилась с таким подходом, можно было сделать проще
+                /* TODO (в целом полная фигня получилась с таким подходом, можно было сделать проще
                 надо обрабатывать OperationResult во вьюмодели и отдавать готовое флоу(или LiveData))
                 Как видишь приходится лишний раз очищать RecyclerView, что полный бред и путает капец*/
                 when (result) {

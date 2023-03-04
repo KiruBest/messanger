@@ -2,31 +2,22 @@ package com.example.messanger.presentation.fragment.authentication
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.messanger.R
 import com.example.messanger.core.result.OperationResult
 import com.example.messanger.databinding.FragmentOtpBinding
+import com.example.messanger.presentation.fragment.base.BaseFragment
 import com.example.messanger.presentation.utils.validateCode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class OtpFragment : Fragment() {
-
-    private lateinit var binding: FragmentOtpBinding
-    private val viewModel: LoginViewModel by viewModel()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentOtpBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+class OtpFragment : BaseFragment<LoginViewModel, FragmentOtpBinding>(
+    viewBindingInflater = FragmentOtpBinding::inflate,
+    layoutId = R.layout.fragment_otp
+) {
+    override val viewModel: LoginViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

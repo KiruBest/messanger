@@ -1,6 +1,6 @@
 package com.example.messanger.presentation.utils
 
-import com.example.messanger.domain.model.ChatItemDto
+import com.example.messanger.data.model.ChatItemDto
 
 //todo Удалить эту дичь, вынести в ChatItemDto
 class LastMessageBuilder(private val chatItemDto: ChatItemDto) {

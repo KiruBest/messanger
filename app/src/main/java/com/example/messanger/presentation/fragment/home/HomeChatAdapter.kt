@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.messanger.data.model.ChatItemDto
 import com.example.messanger.databinding.ChatLayoutItemBinding
-import com.example.messanger.domain.model.ChatItemDto
 
 class HomeChatAdapter(
     private var chatList: List<ChatItemDto>,

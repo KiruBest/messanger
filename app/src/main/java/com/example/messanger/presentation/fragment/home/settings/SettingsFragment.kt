@@ -1,9 +1,7 @@
 package com.example.messanger.presentation.fragment.home.settings
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -13,18 +11,11 @@ import com.example.messanger.databinding.FragmentSettingsBinding
 import com.example.messanger.presentation.fragment.base.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsFragment : BaseFragment() {
-
-    private lateinit var binding: FragmentSettingsBinding
-    private val viewModel: AccountSettingsViewModel by viewModel()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+class SettingsFragment : BaseFragment<AccountSettingsViewModel, FragmentSettingsBinding>(
+    layoutId = R.layout.fragment_settings,
+    viewBindingInflater = FragmentSettingsBinding::inflate
+) {
+    override val viewModel: AccountSettingsViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,8 +46,6 @@ class SettingsFragment : BaseFragment() {
                 }
             }
         }
-
-        viewModel.getCurrentUser()
     }
 
 }

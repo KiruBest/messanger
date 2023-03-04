@@ -1,7 +1,5 @@
 package com.example.messanger.presentation.model
 
-import com.example.messanger.domain.model.Message
-
 data class MessageUi(
     val id: String,
     val text: String,
@@ -10,5 +8,3 @@ data class MessageUi(
     val timestamp: Long,
     val seen: Boolean
 )
-
-fun Message.mapToUi() = MessageUi(id, text, type, from, timestamp, seen)

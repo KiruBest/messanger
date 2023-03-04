@@ -2,9 +2,7 @@ package com.example.messanger.presentation.fragment.home
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -20,20 +18,13 @@ import com.example.messanger.databinding.FragmentHomeBinding
 import com.example.messanger.presentation.fragment.base.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
+    viewBindingInflater = FragmentHomeBinding::inflate,
+    layoutId = R.layout.fragment_home
+) {
+    override val viewModel: HomeViewModel by viewModel()
 
-    private lateinit var binding: FragmentHomeBinding
     private lateinit var _adapter: HomeChatAdapter
-
-    private val viewModel: HomeViewModel by viewModel()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -149,7 +140,9 @@ class HomeFragment : BaseFragment() {
                     is OperationResult.Success -> {
                         binding.progressBar.visibility = View.GONE
 
-                        if (result.data) findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+                        if (result.data) {
+                            findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+                        }
                     }
                 }
             }

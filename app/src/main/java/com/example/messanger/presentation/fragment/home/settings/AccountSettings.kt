@@ -8,9 +8,7 @@ import android.icu.util.Calendar
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -27,12 +25,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AccountSettings : BaseFragment() {
+class AccountSettings : BaseFragment<AccountSettingsViewModel, FragmentAccountSettingsBinding>(
+    layoutId = R.layout.fragment_account_settings,
+    viewBindingInflater = FragmentAccountSettingsBinding::inflate
+) {
 
-    private lateinit var binding: FragmentAccountSettingsBinding
     private lateinit var pictureActivityResult: ActivityResultLauncher<Intent>
     private var bitmap: Bitmap? = null
-    private val viewModel: AccountSettingsViewModel by viewModel()
+    override val viewModel: AccountSettingsViewModel by viewModel()
     private var user: UserUi? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,14 +50,6 @@ class AccountSettings : BaseFragment() {
                     }
                 }
             }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentAccountSettingsBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
 

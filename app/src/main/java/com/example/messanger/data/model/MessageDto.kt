@@ -1,6 +1,6 @@
 package com.example.messanger.data.model
 
-import com.example.messanger.domain.model.Message
+import com.example.messanger.presentation.model.MessageUi
 
 data class MessageDto(
     val id: String,
@@ -11,6 +11,11 @@ data class MessageDto(
     val seen: Boolean
 )
 
-fun MessageDto.mapToDomain() = Message(
-    id, text, type, from, timestamp, seen
+fun MessageDto.mapToUi() = MessageUi(
+    id = id,
+    text = text,
+    type = type,
+    from = from,
+    timestamp = timestamp,
+    seen = seen
 )

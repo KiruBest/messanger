@@ -1,24 +1,31 @@
 package com.example.messanger.presentation.fragment.base
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import com.example.messanger.core.enumeration.UserState
-import com.example.messanger.presentation.fragment.home.HomeViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
-abstract class BaseFragment: Fragment() {
+abstract class BaseFragment<ViewModel : BaseViewModel, ViewBinding : androidx.viewbinding.ViewBinding>(
+    private val viewBindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> ViewBinding,
+    @LayoutRes layoutId: Int
+) : Fragment(layoutId) {
+    private var _binding: ViewBinding? = null
+    protected val binding get() = requireNotNull(_binding)
+    protected abstract val viewModel: ViewModel
 
-    private val viewModel: HomeViewModel by viewModel()
-
-    override fun onStart() {
-        super.onStart()
-        /* todo Дичь, надо у MainActivity создать ViewModel и скопировать туда эти функции
-        Соответвенно их туда перенести
-         */
-        viewModel.updateUserState(UserState.ONLINE)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = viewBindingInflater(inflater, container, false)
+        return binding.root
     }
 
-    override fun onStop() {
-        super.onStop()
-        viewModel.updateUserState(UserState.OFFLINE)
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

@@ -1,12 +1,13 @@
 package com.example.messanger.data.model
 
-import com.example.messanger.domain.model.Chat
+import com.example.messanger.presentation.model.ChatUi
 
 data class ChatDto(
     val id: String,
     val type: String
 )
 
-fun ChatDto.mapToDomain() = Chat(
-    id, type
+fun ChatDto.mapToUi() = ChatUi(
+    id = id,
+    type = type
 )

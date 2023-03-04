@@ -1,9 +1,9 @@
 package com.example.messanger.presentation.fragment.authentication
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messanger.core.result.OperationResult
-import com.example.messanger.domain.repository.IAccountService
+import com.example.messanger.data.repository.IAccountService
+import com.example.messanger.presentation.fragment.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val accountService: IAccountService
-) : ViewModel() {
+) : BaseViewModel() {
     private val _loginFlow: MutableStateFlow<OperationResult<Boolean>> = MutableStateFlow(
         OperationResult.Empty
     )

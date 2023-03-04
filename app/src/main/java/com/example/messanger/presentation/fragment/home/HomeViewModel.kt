@@ -2,18 +2,15 @@ package com.example.messanger.presentation.fragment.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.messanger.core.enumeration.UserState
 import com.example.messanger.core.extensions.mapIfSuccess
 import com.example.messanger.core.result.ListResult
 import com.example.messanger.core.result.OperationResult
-import com.example.messanger.domain.model.ChatItemDto
-import com.example.messanger.domain.model.User
-import com.example.messanger.domain.repository.IAccountService
-import com.example.messanger.domain.repository.IMessengerService
+import com.example.messanger.data.model.ChatItemDto
+import com.example.messanger.data.repository.IAccountService
+import com.example.messanger.data.repository.IMessengerService
+import com.example.messanger.presentation.fragment.base.BaseViewModel
 import com.example.messanger.presentation.model.UserUi
-import com.example.messanger.presentation.model.mapToUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +19,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val accountService: IAccountService,
     private val messengerService: IMessengerService
-) : ViewModel() {
+) : BaseViewModel() {
     private val _userDtoFlow =
         MutableStateFlow<OperationResult<UserUi>>(OperationResult.Loading)
     val userDtoFlow: StateFlow<OperationResult<UserUi>> = _userDtoFlow.asStateFlow()
@@ -46,7 +43,7 @@ class HomeViewModel(
     fun getCurrentUser() {
         viewModelScope.launch {
             val result = accountService.getCurrentUser().mapIfSuccess {
-                OperationResult.Success(it.mapToUi())
+                OperationResult.Success(it)
             }
             _userDtoFlow.tryEmit(result)
         }
@@ -61,12 +58,6 @@ class HomeViewModel(
         }
     }
 
-    fun updateUserState(state: UserState) {
-        viewModelScope.launch {
-            accountService.updateUserState(state)
-        }
-    }
-
     fun getUsersList() {
         viewModelScope.launch {
             if (_usersListFlow.value !is OperationResult.Loading) {
@@ -74,7 +65,7 @@ class HomeViewModel(
             }
 
             val result = messengerService.getUsersList().mapIfSuccess { list ->
-                OperationResult.Success(list.map(User::mapToUi))
+                OperationResult.Success(list)
             }
             _usersListFlow.value = result
         }
@@ -99,7 +90,7 @@ class HomeViewModel(
     fun filter(newText: String?) {
         viewModelScope.launch {
             val result = messengerService.searchUser(newText)
-                .mapIfSuccess { OperationResult.Success(it.map((User::mapToUi))) }
+                .mapIfSuccess { OperationResult.Success(it) }
             _usersListFlow.value = result
         }
     }

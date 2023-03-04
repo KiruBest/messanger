@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.messanger.R
 import com.example.messanger.core.enumeration.UserState
+import com.example.messanger.data.model.ChatItemDto
 import com.example.messanger.databinding.ChatLayoutItemBinding
-import com.example.messanger.domain.model.ChatItemDto
 import com.example.messanger.presentation.utils.LastMessageBuilder
 import com.example.messanger.presentation.utils.asDatHourMinute
 
@@ -35,7 +35,7 @@ class HomeChatViewHolder(binding: ChatLayoutItemBinding) : RecyclerView.ViewHold
         }
 
         when (chatItemDto.status) {
-            UserState.ONLINE.state -> status.visibility = View.VISIBLE
+            UserState.ONLINE.status -> status.visibility = View.VISIBLE
             else -> status.visibility = View.GONE
         }
 
