@@ -139,8 +139,10 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                     is OperationResult.Loading -> binding.progressBar.visibility = View.VISIBLE
                     is OperationResult.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        val canNavigateToLogin = result.data
+                                && findNavController().currentDestination?.id == R.id.homeFragment
 
-                        if (result.data) {
+                        if (canNavigateToLogin) {
                             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
                         }
                     }
