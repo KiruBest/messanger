@@ -73,7 +73,7 @@
         android:id="@+id/addCompanionFragment"
         android:name="com.example.messanger.presentation.fragment.home.companion.NewCompanionFragment"
         android:label="fragment_add_companion"
-        tools:layout="@layout/fragment_add_companion" >
+        tools:layout="@layout/fragment_add_companion">
         <action
             android:id="@+id/action_addCompanionFragment_to_chatFragment"
             app:destination="@id/chatFragment"
@@ -83,5 +83,14 @@
         android:id="@+id/chatFragment"
         android:name="com.example.messanger.presentation.fragment.chat.ChatFragment"
         android:label="fragment_chat"
-        tools:layout="@layout/fragment_chat" />
+        tools:layout="@layout/fragment_chat">
+        <action
+            android:id="@+id/action_chatFragment_to_callFragment"
+            app:destination="@id/callFragment"
+            app:popUpTo="@id/chatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/callFragment"
+        android:name="com.example.messanger.presentation.fragment.CallFragment"
+        android:label="CallFragment" />
 </navigation>

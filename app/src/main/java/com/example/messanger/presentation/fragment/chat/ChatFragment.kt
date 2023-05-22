@@ -35,7 +35,7 @@ class ChatFragment : BaseFragment<ChatViewModel, FragmentChatBinding>(
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             navIcon.setOnClickListener {
-                findNavController().popBackStack(R.id.chatFragment, true)
+                findNavController().navigate(R.id.action_chatFragment_to_callFragment)
             }
 
             recyclerViewMessages.apply {

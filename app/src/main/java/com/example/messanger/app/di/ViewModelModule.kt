@@ -1,6 +1,7 @@
 package com.example.messanger.app.di
 
 import com.example.messanger.presentation.activity.MainActivityViewModel
+import com.example.messanger.presentation.fragment.CallViewModel
 import com.example.messanger.presentation.fragment.authentication.LoginViewModel
 import com.example.messanger.presentation.fragment.chat.ChatViewModel
 import com.example.messanger.presentation.fragment.home.HomeViewModel
@@ -14,4 +15,5 @@ val viewModelModule = module {
     viewModel { HomeViewModel(get(), get()) }
     viewModel { parameters -> ChatViewModel(companionID = parameters.get(), get()) }
     viewModel { AccountSettingsViewModel(get()) }
+    viewModel { CallViewModel(get()) }
 }
