@@ -1,6 +1,9 @@
 package com.example.messanger.data.repository
 
+import android.graphics.Bitmap
+import android.util.Log
 import com.example.messanger.BuildConfig
+import com.example.messanger.core.enumeration.MessageType
 import com.example.messanger.core.exception.DatabaseReadDataException
 import com.example.messanger.core.exception.UserUnAuthException
 import com.example.messanger.core.result.FlowListResult
@@ -28,6 +31,7 @@ import com.example.messanger.presentation.model.UserUi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
+import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
@@ -39,6 +43,8 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -46,7 +52,9 @@ import kotlin.coroutines.suspendCoroutine
 class MessengerService(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseRef: DatabaseReference,
-    private val gson: Gson
+    private val firebaseReference: DatabaseReference,
+    private val gson: Gson,
+    private val storageReference: StorageReference
 ) : IMessengerService {
     private val usersList = MutableStateFlow<List<UserDto>>(emptyList())
     private val chatItemList = MutableStateFlow<List<ChatItemDto>>(emptyList())
@@ -84,7 +92,8 @@ class MessengerService(
 
     override suspend fun sendMessage(
         text: String,
-        companionID: String
+        companionID: String,
+        messageType: MessageType
     ): ListResult<MessageUi> = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             firebaseAuth.currentUser?.uid?.let { uid ->
@@ -97,7 +106,7 @@ class MessengerService(
                 val message = mapOf(
                     MESSAGE_ID to messageKey,
                     MESSAGE_TEXT to text,
-                    MESSAGE_TYPE to "Текст",
+                    MESSAGE_TYPE to messageType.type,
                     MESSAGE_FROM to uid,
                     MESSAGE_TIMESTAMP to ServerValue.TIMESTAMP,
                     MESSAGE_SEEN to false
@@ -396,6 +405,37 @@ class MessengerService(
         }
     }
 
+    override suspend fun sendPicture(bitmap: Bitmap, companionID: String): OperationResult<String> {
+        return withContext(Dispatchers.IO) {
+            suspendCoroutine { continuation ->
+                val ref = storageReference.child("files/${companionID + bitmap.hashCode()}.jpg")
+
+                val baos = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                val data = baos.toByteArray()
+
+                val uploadTask = ref.putBytes(data)
+
+                uploadTask.continueWithTask { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            continuation.resume(OperationResult.Error(it))
+                        }
+                    }
+                    ref.downloadUrl
+                }.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result.toString()
+                        continuation.resume(OperationResult.Success(downloadUri))
+                    } else {
+                        continuation.resume(OperationResult.Error(task.exception!!))
+                    }
+                }
+            }
+        }
+    }
+
+
     companion object {
         private val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
         private const val NOTIFICATION_SENDER_URL = "https://fcm.googleapis.com/fcm/send"
@@ -405,11 +445,17 @@ class MessengerService(
 
 interface IMessengerService {
     suspend fun getUsersList(): ListResult<UserUi>
-    suspend fun sendMessage(text: String, companionID: String): ListResult<MessageUi>
+    suspend fun sendMessage(
+        text: String,
+        companionID: String,
+        messageType: MessageType = MessageType.TEXT
+    ): ListResult<MessageUi>
+
     suspend fun getMessagesByCompanionId(companionID: String): FlowListResult<MessageUi>
     suspend fun getExistsChats(): FlowListResult<ChatItemDto>
     suspend fun addChat(companionID: String, chatType: String): OperationResult<Boolean>
     suspend fun readMessage(companionID: String, messageID: String): OperationResult<Unit>
     suspend fun getCompanionById(companionID: String): OperationResult<UserUi>
     suspend fun searchUser(newText: String?): ListResult<UserUi>
+    suspend fun sendPicture(bitmap: Bitmap, companionID: String): OperationResult<String>
 }

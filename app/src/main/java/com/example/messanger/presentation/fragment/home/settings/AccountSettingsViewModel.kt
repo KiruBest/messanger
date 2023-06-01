@@ -100,6 +100,6 @@ class AccountSettingsViewModel(
     }
 
     companion object {
-        private const val DATA = "data"
+        const val DATA = "data"
     }
 }

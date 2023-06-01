@@ -9,6 +9,6 @@ import org.koin.dsl.module
 
 val dataModule = module {
     single<IAccountService> { AccountService(get(), get(), get(), get()) }
-    single<IMessengerService> { MessengerService(get(), get(), get()) }
+    single<IMessengerService> { MessengerService(get(), get(), get(), get(), get()) }
     single { Gson() }
 }

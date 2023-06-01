@@ -25,7 +25,6 @@ class CompanionViewHolder(private val binding: CompanionItemLayoutBinding) :
                     )
                 )
                 .into(imageViewAvatar)
-
         }
     }
 }

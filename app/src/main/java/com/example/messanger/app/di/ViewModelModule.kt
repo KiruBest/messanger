@@ -16,6 +16,6 @@ val viewModelModule = module {
     viewModel { HomeViewModel(get(), get()) }
     viewModel { parameters -> ChatViewModel(companionID = parameters.get(), get()) }
     viewModel { AccountSettingsViewModel(get()) }
-    viewModel { CallViewModel() }
+    viewModel { parameters -> CallViewModel(initCallState = parameters.get()) }
     viewModel { VideoCallViewModel() }
 }

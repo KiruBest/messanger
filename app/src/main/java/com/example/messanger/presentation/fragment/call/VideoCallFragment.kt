@@ -22,11 +22,11 @@ class VideoCallFragment : BaseFragment<VideoCallViewModel, FragmentVideoCallBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.imageButtonCallEnd.setOnClickListener {
-            findNavController().popBackStack(R.id.chatFragment, true)
+            findNavController().popBackStack()
         }
 
         binding.imageButtonVideoCam.setOnClickListener {
-            findNavController().navigate(R.id.callFragment)
+            findNavController().popBackStack(R.id.callFragment,false)
         }
     }
 }

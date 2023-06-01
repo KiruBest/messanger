@@ -132,9 +132,9 @@ class AccountSettings : BaseFragment<AccountSettingsViewModel, FragmentAccountSe
 
 
                         lifecycleScope.launchWhenCreated {
-                            viewModel.isSuccessFlow.collect{
-                                if (it != null ){
-                                    Toast.makeText(requireContext(),"Успешно!",Toast.LENGTH_SHORT).show()
+                            viewModel.isSuccessFlow.collect {
+                                if (it != null) {
+                                    Toast.makeText(requireContext(), "Успешно!", Toast.LENGTH_SHORT).show()
                                     findNavController().popBackStack(R.id.accountSettings, true)
                                 }
                             }
@@ -195,8 +195,8 @@ class AccountSettings : BaseFragment<AccountSettingsViewModel, FragmentAccountSe
     }
 
     companion object {
-        private const val ACTION_OPEN_CAMERA = 0
-        private const val ACTION_OPEN_GALLERY = 1
-        private const val ACTION_DELETE_AVATAR = 2
+        const val ACTION_OPEN_CAMERA = 0
+        const val ACTION_OPEN_GALLERY = 1
+        const val ACTION_DELETE_AVATAR = 2
     }
 }

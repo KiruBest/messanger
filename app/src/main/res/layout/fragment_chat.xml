@@ -121,7 +121,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:weightSum="10"
+        android:weightSum="9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -134,7 +134,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:layout_weight="1.5"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
             android:hint="@string/write_message"
@@ -147,12 +147,23 @@
             android:textColorHint="@color/brown_color" />
 
         <ImageButton
+            android:id="@+id/imageViewAttachFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="4"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_baseline_attach_file_24"
+            app:tint="@color/brown_color" />
+
+        <ImageButton
             android:id="@+id/imageViewSendMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:layout_weight="8.5"
+            android:layout_weight="4"
             android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/ic_baseline_send_24"
             app:tint="@color/brown_color" />

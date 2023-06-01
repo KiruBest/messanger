@@ -1,11 +1,16 @@
 package com.example.messanger.presentation.fragment.chat
 
+import android.content.ContentResolver
+import android.content.Intent
+import android.graphics.Bitmap
 import androidx.lifecycle.viewModelScope
+import com.example.messanger.core.enumeration.MessageType
 import com.example.messanger.core.extensions.mapIfSuccess
 import com.example.messanger.core.result.ListResult
 import com.example.messanger.core.result.OperationResult
 import com.example.messanger.data.repository.IMessengerService
 import com.example.messanger.presentation.fragment.base.BaseViewModel
+import com.example.messanger.presentation.fragment.home.settings.AccountSettingsViewModel
 import com.example.messanger.presentation.model.MessageUi
 import com.example.messanger.presentation.model.UserUi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -77,6 +82,23 @@ class ChatViewModel(
                 OperationResult.Success(it)
             }
             _companionFlow.tryEmit(companionUi)
+        }
+    }
+
+    fun getUser() : UserUi?{
+        return (companionFlow.value as? OperationResult.Success)?.data
+    }
+
+    fun sendPicture(data: Intent, contentResolver: ContentResolver){
+        var bitmap: Bitmap? = null
+
+        if (data.hasExtra(AccountSettingsViewModel.DATA)) {
+            bitmap = data.extras?.get(AccountSettingsViewModel.DATA) as Bitmap
+            viewModelScope.launch {
+                messengerService.sendPicture(bitmap,companionID).mapIfSuccess {
+                    messengerService.sendMessage(it,companionID, messageType = MessageType.IMAGE)
+                }
+            }
         }
     }
 }
