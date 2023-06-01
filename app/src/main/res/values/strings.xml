@@ -26,6 +26,7 @@
     <string name="status_fragment_settings">Укажите статус</string>
     <string name="account_fragment_settings">Аккаунт</string>
     <string name="notification_fragment_settings">Уведомления</string>
+    <string name="top_fragment_call">Ваш звонок защищен</string>
 
 
     <string name="write_message">Напишите сообщение</string>

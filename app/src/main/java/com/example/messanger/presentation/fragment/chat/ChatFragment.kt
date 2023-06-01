@@ -33,6 +33,15 @@ class ChatFragment : BaseFragment<ChatViewModel, FragmentChatBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.imageButtonCall.setOnClickListener{
+            findNavController().navigate(R.id.action_chatFragment_to_callFragment)
+        }
+
+        binding.imageButtonVideoCall.setOnClickListener{
+            findNavController().navigate(R.id.action_chatFragment_to_videoCallFragment)
+        }
+
         binding.apply {
             navIcon.setOnClickListener {
                 findNavController().popBackStack(R.id.chatFragment, true)
