@@ -77,13 +77,9 @@ class ChatFragment : BaseFragment<ChatViewModel, FragmentChatBinding>(
 
         binding.imageViewAttachFile.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Сменить фото")
+                .setTitle(R.string.title_send_file)
                 .setItems(
-                    arrayOf(
-                        "Сделать фото",
-                        "Выбрать из галереи",
-                        "Выход"
-                    )
+                    R.array.diaog_actions
                 ) { _, which ->
                     when (which) {
                         AccountSettings.ACTION_OPEN_CAMERA -> {

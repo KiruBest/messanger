@@ -27,6 +27,14 @@
     <string name="account_fragment_settings">Аккаунт</string>
     <string name="notification_fragment_settings">Уведомления</string>
     <string name="top_fragment_call">Ваш звонок защищен</string>
+    <string name="title_send_file">Отправить файл</string>
+    <string name="change_photo">Сменить фото</string>
+
+    <string-array name="diaog_actions">
+        <item>Сделать фото</item>
+        <item>Выбрать из галереи</item>
+        <item>Выход</item>
+    </string-array>
 
 
     <string name="write_message">Напишите сообщение</string>

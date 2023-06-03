@@ -142,13 +142,9 @@ class AccountSettings : BaseFragment<AccountSettingsViewModel, FragmentAccountSe
 
                         binding.buttonChangePhoto.setOnClickListener {
                             MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Сменить фото")
+                                .setTitle(R.string.change_photo)
                                 .setItems(
-                                    arrayOf(
-                                        "Сделать фото",
-                                        "Выбрать из галереи",
-                                        "Выход"
-                                    )
+                                    R.array.diaog_actions
                                 ) { _, which ->
                                     when (which) {
                                         ACTION_OPEN_CAMERA -> {
